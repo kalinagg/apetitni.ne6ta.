@@ -1,0 +1,51 @@
+[
+    {
+        "id": "1",
+        "title": "Cookies",
+        "instructions": "Die Butter mit beiden Zuckersorten und dem Salz schaumig schlagen. Die Eier und den Vanillezucker zufügen und cremig rühren. Das Mehl und die Mandeln nehmen und mit dem Backpulver mischen und unter den Teig einrühren. Der Teig ist vergleichsweise fest und zäh. Schokolade unter den Teig mischen. Den Teig esslöffelweise auf ein mit Backpapier ausgelegtes Backblech setzen. Viel Platz lassen, da die Cookies sehr stark zerlaufen. Bei 180° C ca. 9 Minuten backen. Perfekt sind sie, wenn die Ränder ganz leicht braun sind und die Cookies im Kern noch feucht wirken. Dann sofort aus dem Ofen nehmen und ganz vorsichtig, sie sind sehr zerbrechlich, auf eine Platte zum Auskühlen setzen. Nicht auf dem heißen Blech lassen. Beim Auskühlen härten sie dann nach, bleiben innen aber schön zart. Am besten gekühlt in einer Dose aufbewahren.",
+        "img": "img_food/cookies.png",
+        "ingredients": ["мляко", "яйца", "захар"]
+    },
+    {
+        "id": "2",
+        "title": "Пълнозърнест хляб със закваска",
+        "instructions": "Продуките за първото втасване се смесват в купа. Трябва да се получи лепкава каша. Купата се покрива с найлоново фолио и сместа оставя да втаса за около 8 часа при стайна температура (20-23 градуса Целзий). С времето кашата ще се надигне. Първото втасване се смята за приключило, когато сместа започне да спада обратно (след около 8 часа, зависи от околната температура и силата на кваса).",
+        "img": "img_food/sourdough_bread.png",
+        "ingredients": ["мляко", "яйца", "захар"]
+    },
+    {
+        "id": "3",
+        "title": "Бял хляб с предварителна закваска",
+        "instructions": "Останалото брашно се смесва със солта и маята и се разбърква добре. Останалата вода се затопля до 39° C и се добавя към сместа. Разбърква се и се замесва тесто. Меси се докато тестото стане еластично. Проверява се с натискане с пръст по повърхността му. Покрива се с фолио и кърпа и се оставя да втаса. Когато удвои размера си се удря, за да спадне и се оформя като хляб. Поставя се върху добре набрашнена дъска. Покрива се с намазнено фолио и се завива отстрани с кърпа, за да не изсъхва. Тестото втасва отново до удвояване на обема си. След като втаса се поставя върху хартия за печене в предваритлно загрята до 220° C фурна. Непосредствено след това във фурната се напръскава с вода. След 10 мин. фурната се намалява на 200° C. Пече се общо 35-40 мин. Ако е необходимо хлябът се покрива с алуминиево фолио, с лъскавата част нагоре, за да не се препече отгоре. След като се извади от фурната, се намазва със смес от зехтин и вода (1:4) и се поставя върху решетка, за да изстива.",
+        "img": "img_food/white_bread.png",
+        "ingredients": ["мляко", "яйца", "захар"]
+    },
+    {
+        "id": "4",
+        "title": "Шоко мъфини",
+        "instructions": "Butter zerlassen. Eier mit Puderzucker, Vanillemark und Zitronenschale in ca. 5 Minuten dickschaumig schlagen. Haselnüsse mit Kakao, Mehl und Backpulver mischen, unter die Eimasse heben. Flüssige Butter zügig unterrühren. Teig 30 Minuten kalt stellen. Inzwischen den Backofen auf 200° vorheizen. Die Papierbackförmchen in den Blechmulden stellen. Den Teig in die Mulden verteilen. Muffins im vorgeheizten Ofen 12 Minuten backen. Muffins aus der Form lösen, auf einem Kuchengitter auskühlen lassen und mit Kakao oder geriebene Schokolade bestäuben.",
+        "img": "img_food/shoko_muffins.png",
+        "ingredients": ["мляко", "яйца", "захар"]
+    },
+    {
+        "id": "5",
+        "title": "Бургерче",
+        "instructions": "kommt noch ...",
+        "img": "img_food/burger.png",
+        "ingredients": ["мляко", "яйца", "захар"]
+    },
+    {
+        "id": "6",
+        "title": "Соленки",
+        "instructions": "Към преварително настърганото сирене се добавя разтопеното на слаб огън масло, киселото мляко, червения пипер и сместа от брашно и бакпулвер. Тестото се разбърква докато поеме брашното изцяло. От сместа се оформят три топки, които се оствят в хладилника за около 2 часа. Тестото се разточва върху набрашнена повърхност и от него се изрязват соленките. Поставят се върху тава покрита с хария за печене, намазват се с жълтък и се поръсват с кимион и сусам. Пекат се в преварително загрята до 175° C фурна около 15 мин.",
+        "img": "img_food/cheese_bears.png",
+        "ingredients": ["мляко", "яйца", "захар"]
+    },
+    {
+        "id": "7",
+        "title": "Салата от нахут",
+        "instructions": "Доматът се нарязва на малки парчета. Премахват се костилките на маслините. Босилекът се измива, подсушава и накъсва. В купа се смесват нахута, домата, маслините и босилека. Добавят се солта, подправките и зехтина, след което се разбърква. Отгоре се настъргва пармезан на едро.",
+        "img": "img_food/chickpeas_salad.png",
+        "ingredients": ["мляко", "яйца", "захар"]
+    }
+]
