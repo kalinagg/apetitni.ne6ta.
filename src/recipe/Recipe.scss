@@ -1,5 +1,14 @@
 $headline-color: #666;
 
+.hidden {
+    display: none;
+}
+
+.recipe-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
+
 h2 {
     color: $headline-color;
     font-size: 1.3em;
@@ -38,6 +47,7 @@ ul li {
     padding: 10px;
     margin: 0px 40px 20px 0px;
 }
+
 
 #footer {
     background: #eee;

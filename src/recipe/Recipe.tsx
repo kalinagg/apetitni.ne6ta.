@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './Recipe.scss';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -15,12 +15,12 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 export interface IRecipeContainerState {
     state: IRecipeContainer;
-    handleSubmit(event:React.FormEvent<HTMLElement>):void;
-    handleChangeTitle(recipeId: number, event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>):void;
-    handleChangeIngredients(recipeId: number, event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>):void;
-    handleChangeInstructions(recipeId: number, event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>):void;
-    handleExpandClick(recipeId: number):void;
-    handleDelete(recipeId: number, event:React.FormEvent<HTMLElement>):void;
+    handleSubmit(event: React.FormEvent<HTMLElement>): void;
+    handleChangeTitle(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void;
+    handleChangeIngredients(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void;
+    handleChangeInstructions(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void;
+    handleExpandClick(recipeId: number): void;
+    handleDelete(recipeId: number, event: React.FormEvent<HTMLElement>): void;
     classes: any;
 }
 
@@ -38,28 +38,42 @@ export interface IRecipe {
     title: string;
     img: string;
     instructions: string;
-    propTypes: any;
+}
+
+export class AddRecipeButton extends Component<any, any> {
+    render() {
+        return (
+            <Button
+                type="button"
+                onClick={() => this.props.handleAddRecipe()}
+                variant="text"
+                color="secondary">+ Add Recipe</Button>
+        );
+    }
 }
 
 class Recipe extends Component<IRecipeContainerState, any> {
     render() {
-        const {error, isLoaded, recipes, expanded, expandedId} = this.props.state;
-        if(error) {
+        const { error, isLoaded, recipes, expanded, expandedId } = this.props.state;
+        if (error) {
             return <div>Error: {error.message}</div>;
         }
 
-        if(!isLoaded) {
+        if (!isLoaded) {
             return <div>Loading ...</div>
         }
 
         const classes = this.props.classes;
         return (
             recipes.map(recipe => (
-                <Card className={classes.card} key={recipe.id}>                
-                    <CardMedia 
-                        className={classes.media}
-                        image={recipe.img} />
-                    <CardContent> 
+                <Card className={classes.card} key={recipe.id}>
+                    <label htmlFor="image-upload">
+                        <CardMedia
+                            className={classes.media}
+                            image={recipe.img} />
+                    </label>
+                    <input type="file" id="image-upload" className="hidden" />
+                    <CardContent>
                         <TextField
                             id={'title-' + recipe.id}
                             name={'title-' + recipe.id}
@@ -67,7 +81,7 @@ class Recipe extends Component<IRecipeContainerState, any> {
                             variant="outlined"
                             value={recipe.title}
                             onChange={e => this.props.handleChangeTitle(recipe.id, e)} />
-                        <br/><br/>    
+                        <br /><br />
                         <TextField
                             multiline
                             id={'ingredients-' + recipe.id}
@@ -75,19 +89,19 @@ class Recipe extends Component<IRecipeContainerState, any> {
                             label="Ingredients"
                             variant="outlined"
                             value={recipe.ingredients.join('\r\n')}
-                            onChange={e => this.props.handleChangeIngredients(recipe.id, e)} /> 
-                        <br/><br/>                                            
+                            onChange={e => this.props.handleChangeIngredients(recipe.id, e)} />
+                        <br /><br />
                         <Button
                             type="button"
                             onClick={e => this.props.handleDelete(recipe.id, e)}
                             variant="contained"
                             color="secondary">Delete</Button>
-                        &nbsp;&nbsp;     
+                        &nbsp;&nbsp;
                         <Button
                             type="button"
                             onClick={this.props.handleSubmit}
                             variant="contained"
-                            color="primary">Save</Button>     
+                            color="primary">Save</Button>
                     </CardContent>
                     <CardActions disableSpacing>
                         <IconButton
@@ -103,13 +117,13 @@ class Recipe extends Component<IRecipeContainerState, any> {
                     <Collapse in={expandedId === recipe.id && expanded} timeout="auto" unmountOnExit>
                         <CardContent>
                             <TextField
-                                    multiline
-                                    id={'instructions-' + recipe.id}
-                                    name={'instructions-' + recipe.id}
-                                    label="Instructions"
-                                    variant="outlined"
-                                    value={recipe.instructions}
-                                    onChange={e => this.props.handleChangeInstructions(recipe.id, e)} />
+                                multiline
+                                id={'instructions-' + recipe.id}
+                                name={'instructions-' + recipe.id}
+                                label="Instructions"
+                                variant="outlined"
+                                value={recipe.instructions}
+                                onChange={e => this.props.handleChangeInstructions(recipe.id, e)} />
                         </CardContent>
                     </Collapse>
                 </Card>
@@ -117,24 +131,26 @@ class Recipe extends Component<IRecipeContainerState, any> {
         );
     }
 }
-  
+
 export default withStyles(theme => ({
     card: {
-      maxWidth: 345,
+        borderRadius: 0,
+        maxWidth: 300,
+        margin: 20
     },
     media: {
-      height: 0,
-      paddingTop: '56.25%', // 16:9
+        height: 0,
+        paddingTop: '55%',
+        cursor: 'pointer'
     },
     expand: {
-      transform: 'rotate(0deg)',
-      marginLeft: 'auto',
-      transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-      }),
+        transform: 'rotate(0deg)',
+        marginLeft: 'auto',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
     },
     expandOpen: {
-      transform: 'rotate(180deg)',
+        transform: 'rotate(180deg)',
     }
-  }))(Recipe);
-  
+}))(Recipe);

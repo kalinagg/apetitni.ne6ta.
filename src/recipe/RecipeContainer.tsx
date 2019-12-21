@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Recipe, { IRecipeContainer, IRecipe } from './Recipe';
+import Recipe, { IRecipeContainer, IRecipe, AddRecipeButton } from './Recipe';
 
 interface IRecipeContainerProps {}
 
@@ -18,9 +18,14 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         this.handleChangeInstructions = this.handleChangeInstructions.bind(this);
         this.handleExpandClick = this.handleExpandClick.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handleAddRecipe = this.handleAddRecipe.bind(this);
     }
 
     componentDidMount() {
+        this.getRecipes();
+    }
+
+    getRecipes():void {
         fetch('./recipes')
             .then(recipes => recipes.json())
             .then(
@@ -118,13 +123,43 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         }); 
     };
 
+    handleAddRecipe():void {
+        const recipes = this.state.recipes;
+        const recipesIds: number[] = [];
+
+        recipes.forEach(r => {
+            recipesIds.push(r.id);
+        });
+
+        const newRecipe = {
+            id: recipes.length ? Math.max(...recipes.map(r => r.id)) + 1 : 1,
+            title: '',
+            instructions: '',
+            img: 'img_food/default.jpg',
+            ingredients: []
+        }
+
+        this.setState({
+            recipes: [
+                newRecipe,
+                ...this.state.recipes]
+        });
+    }
+
     render() {
-        return <Recipe state={this.state}
-            handleChangeTitle={this.handleChangeTitle}
-            handleChangeIngredients={this.handleChangeIngredients}
-            handleChangeInstructions={this.handleChangeInstructions}
-            handleSubmit={this.handleSubmit}
-            handleExpandClick={this.handleExpandClick}
-            handleDelete={this.handleDelete} />
+        return (
+            <React.Fragment>
+                <AddRecipeButton handleAddRecipe={this.handleAddRecipe} />
+                <div className="recipe-container">
+                    <Recipe state={this.state}
+                    handleChangeTitle={this.handleChangeTitle}
+                    handleChangeIngredients={this.handleChangeIngredients}
+                    handleChangeInstructions={this.handleChangeInstructions}
+                    handleSubmit={this.handleSubmit}
+                    handleExpandClick={this.handleExpandClick}
+                    handleDelete={this.handleDelete} />
+                </div>
+            </React.Fragment>    
+        )
     }
 }
