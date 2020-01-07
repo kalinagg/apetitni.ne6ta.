@@ -5,7 +5,7 @@ import './index.css';
 // import * as serviceWorker from './serviceWorker';
 import RecipeContainer from './recipe/RecipeContainer';
 
-ReactDOM.render(<RecipeContainer />, document.getElementById('root'));
+ReactDOM.render(<RecipeContainer />, document.querySelector('.root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

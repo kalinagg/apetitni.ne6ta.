@@ -1,17 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './Recipe.scss';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import '@material-ui/core/Button';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import EditIcon from '@material-ui/icons/Edit';
+import ShareIcon from '@material-ui/icons/Share';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
+import UndoIcon from '@material-ui/icons/Undo';
 
 export interface IRecipeContainerState {
     state: IRecipeContainer;
@@ -20,7 +24,9 @@ export interface IRecipeContainerState {
     handleChangeIngredients(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void;
     handleChangeInstructions(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void;
     handleExpandClick(recipeId: number): void;
-    handleDelete(recipeId: number, event: React.FormEvent<HTMLElement>): void;
+    handleDelete(recipeId: number, event: any): void;
+    handleEdit(event): void;
+    handleUndo(event): void;
     classes: any;
 }
 
@@ -40,14 +46,19 @@ export interface IRecipe {
     instructions: string;
 }
 
-export class AddRecipeButton extends Component<any, any> {
+export class AddRecipeButton extends Component<any, any> {    
     render() {
         return (
-            <Button
-                type="button"
-                onClick={() => this.props.handleAddRecipe()}
-                variant="text"
-                color="secondary">+ Add Recipe</Button>
+            <Fragment>
+                <Fab
+                    size="small"
+                    color="secondary"
+                    aria-label="Add Recipe"
+                    style={{background: '#f33'}}
+                    onClick={() => this.props.handleAddRecipe()}>
+                    <AddIcon />
+                </Fab>
+            </Fragment>
         );
     }
 }
@@ -66,44 +77,66 @@ class Recipe extends Component<IRecipeContainerState, any> {
         const classes = this.props.classes;
         return (
             recipes.map(recipe => (
-                <Card className={classes.card} key={recipe.id}>
-                    <label htmlFor="image-upload">
-                        <CardMedia
-                            className={classes.media}
-                            image={recipe.img} />
-                    </label>
-                    <input type="file" id="image-upload" className="hidden" />
-                    <CardContent>
-                        <TextField
-                            id={'title-' + recipe.id}
-                            name={'title-' + recipe.id}
-                            label="Title"
-                            variant="outlined"
-                            value={recipe.title}
-                            onChange={e => this.props.handleChangeTitle(recipe.id, e)} />
-                        <br /><br />
-                        <TextField
-                            multiline
-                            id={'ingredients-' + recipe.id}
-                            name={'ingredients-' + recipe.id}
-                            label="Ingredients"
-                            variant="outlined"
-                            value={recipe.ingredients.join('\r\n')}
-                            onChange={e => this.props.handleChangeIngredients(recipe.id, e)} />
-                        <br /><br />
-                        <Button
-                            type="button"
-                            onClick={e => this.props.handleDelete(recipe.id, e)}
-                            variant="contained"
-                            color="secondary">Delete</Button>
-                        &nbsp;&nbsp;
-                        <Button
-                            type="button"
-                            onClick={this.props.handleSubmit}
-                            variant="contained"
-                            color="primary">Save</Button>
+                <Card className={clsx(classes.card, "recipe")} key={recipe.id}>
+                    <CardContent className={clsx(classes.cardContent)}>
+                        <div className="recipe-image-container">
+                            <label htmlFor="image-upload">
+                                <img className="recipe-image" src={recipe.img} alt={recipe.title} />
+                            </label>
+                            <input type="file" id="image-upload" className="hidden" />
+                        </div>
+                        <div className="recipe-input-container">
+                            <div className="recipe-input">
+                                <TextField
+                                    disabled
+                                    margin="dense"
+                                    fullWidth
+                                    size="small"
+                                    className="input-field title"
+                                    id={'title-' + recipe.id}
+                                    name={'title-' + recipe.id}
+                                    label="Title"
+                                    variant="outlined"
+                                    value={recipe.title}
+                                    onChange={e => this.props.handleChangeTitle(recipe.id, e)} />  
+                            </div>
+                            <hr className="devider" />
+                            <div className="recipe-input">
+                                <TextField
+                                    disabled
+                                    margin="dense"
+                                    multiline
+                                    fullWidth
+                                    className="input-field"
+                                    id={'ingredients-' + recipe.id}
+                                    name={'ingredients-' + recipe.id}
+                                    label="Ingredients"
+                                    variant="outlined"                                
+                                    value={recipe.ingredients.join('\r\n')}
+                                    onChange={e => this.props.handleChangeIngredients(recipe.id, e)} />     
+                            </div>                    
+                        </div>
                     </CardContent>
-                    <CardActions disableSpacing>
+                    <CardActions className={clsx(classes.cardActions)} disableSpacing>
+                        <IconButton className="edit-icon" aria-label="Edit"
+                            onClick={ e => this.props.handleEdit(e) }>
+                            <EditIcon />
+                        </IconButton>
+                        <IconButton className="undo-icon" aria-label="Undo"
+                            onClick={ e => this.props.handleUndo(e) }>
+                            <UndoIcon />
+                        </IconButton>
+                        <IconButton className="save-icon" aria-label="Save"
+                            onClick={e => this.props.handleSubmit(e)}>
+                            <SaveAltIcon />
+                        </IconButton>
+                        <IconButton className="share-icon" aria-label="Share">
+                            <ShareIcon />
+                        </IconButton>
+                        <IconButton className="delete-icon" aria-label="Delete"
+                            onClick={e => this.props.handleDelete(recipe.id, e)}>
+                            <DeleteIcon />
+                        </IconButton>                    
                         <IconButton
                             className={clsx(classes.expand, {
                                 [classes.expandOpen]: expandedId === recipe.id && expanded,
@@ -116,14 +149,20 @@ class Recipe extends Component<IRecipeContainerState, any> {
                     </CardActions>
                     <Collapse in={expandedId === recipe.id && expanded} timeout="auto" unmountOnExit>
                         <CardContent>
-                            <TextField
-                                multiline
-                                id={'instructions-' + recipe.id}
-                                name={'instructions-' + recipe.id}
-                                label="Instructions"
-                                variant="outlined"
-                                value={recipe.instructions}
-                                onChange={e => this.props.handleChangeInstructions(recipe.id, e)} />
+                            <div className="recipe-input">
+                                <TextField
+                                    disabled
+                                    margin="dense"
+                                    multiline
+                                    fullWidth
+                                    className="input-field instructions"
+                                    id={'instructions-' + recipe.id}
+                                    name={'instructions-' + recipe.id}
+                                    label="Instructions"
+                                    variant="outlined"
+                                    value={recipe.instructions}
+                                    onChange={e => this.props.handleChangeInstructions(recipe.id, e)} />
+                            </div>                        
                         </CardContent>
                     </Collapse>
                 </Card>
@@ -134,23 +173,28 @@ class Recipe extends Component<IRecipeContainerState, any> {
 
 export default withStyles(theme => ({
     card: {
+        boxShadow: '3px 5px 4px #bbb',
         borderRadius: 0,
-        maxWidth: 300,
-        margin: 20
+        border: '1px solid #eee'
+    },
+    cardContent: {
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    cardActions: {
+        justifyContent: 'space-between',
     },
     media: {
-        height: 0,
-        paddingTop: '55%',
-        cursor: 'pointer'
+      height: 0,
+      paddingTop: '56.25%', // 16:9
     },
     expand: {
-        transform: 'rotate(0deg)',
-        marginLeft: 'auto',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
+      transform: 'rotate(0deg)',
+      transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.shortest,
+      }),
     },
     expandOpen: {
-        transform: 'rotate(180deg)',
+      transform: 'rotate(180deg)',
     }
-}))(Recipe);
+  }))(Recipe);

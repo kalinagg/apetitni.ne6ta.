@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
 import Recipe, { IRecipeContainer, IRecipe, AddRecipeButton } from './Recipe';
+import './RecipeContainer.scss';
+import Logo from '../logo/Logo';
+import Footer from '../footer/Footer';
 
 interface IRecipeContainerProps {}
 
 export default class RecipeContainer extends Component<any, IRecipeContainer> {
     constructor(props: any) {
         super(props);
+        
         this.state = {
             isLoaded: false,
             recipes: [],
             expanded: false,
             expandedId: -1
-        }
+        };
+
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeTitle = this.handleChangeTitle.bind(this);
         this.handleChangeIngredients = this.handleChangeIngredients.bind(this);
@@ -19,13 +24,15 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         this.handleExpandClick = this.handleExpandClick.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAddRecipe = this.handleAddRecipe.bind(this);
+        this.handleUndo = this.handleUndo.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
     componentDidMount() {
         this.getRecipes();
     }
 
-    getRecipes():void {
+    getRecipes(): void {
         fetch('./recipes')
             .then(recipes => recipes.json())
             .then(
@@ -44,23 +51,27 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
             );
     }
 
-    updateRecipeById(recipeId:number, recipes:IRecipe[], changeRecipe:(recipe: IRecipe) => void):IRecipe[] {
-        const recipesToUpdate = recipes.filter((r, i) => r.id === recipeId);
+    updateRecipeById(recipeId: number, recipes: IRecipe[], changeRecipe: (recipe: IRecipe) => void): IRecipe[] {
+        const recipeIndex = recipes.findIndex(r => r.id === recipeId);
 
-        if(!recipesToUpdate.length) {
+        if (recipeIndex < 0) {
             throw new Error("Recipe not found:" + recipeId);
         }
 
-        changeRecipe(recipesToUpdate[0]);
+        const newRecipe = Object.assign({}, recipes[recipeIndex]);
+        changeRecipe(newRecipe);
 
-        return recipes;
+        const newRecipes = [...recipes];
+        newRecipes.splice(recipeIndex, 1, newRecipe);
+
+        return newRecipes;
     }
 
-    deleteRecipeById(recipeId:number, recipes:IRecipe[]) {
+    deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
         return recipes.filter(r => r.id !== recipeId);
     }
 
-    handleChangeTitle(recipeId: number, event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>):void {
+    handleChangeTitle(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
         this.setState({
             recipes: this.updateRecipeById(
                 recipeId,
@@ -69,7 +80,7 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         });
     }
 
-    handleChangeIngredients(recipeId: number, event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>):void {
+    handleChangeIngredients(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
         const ingredients = event.target.value.split('\r\n');
 
         this.setState({
@@ -80,7 +91,7 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         });
     }
 
-    handleChangeInstructions(recipeId: number, event:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>):void {
+    handleChangeInstructions(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
         this.setState({
             recipes: this.updateRecipeById(
                 recipeId,
@@ -89,19 +100,20 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         });
     }
 
-    saveRecipes(recipes:IRecipe[]): Promise<void> {
+    saveRecipes(recipes: IRecipe[]): Promise<void> {
         return fetch('./recipes', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(recipes)
-        }).then(r => { console.log(r.statusText)});
+        }).then(r => { console.log(r.statusText) });
     }
 
-    handleSubmit(event:React.FormEvent<HTMLElement>):void {
+    handleSubmit(event: React.FormEvent<HTMLElement>): void {
+        this.toggleEditMode(event);
         this.saveRecipes(this.state.recipes);
     }
 
-    handleDelete(recipeId:number, event:React.FormEvent<HTMLElement>):void {
+    handleDelete(recipeId: number, event: any): void {
         const newRecipes = this.deleteRecipeById(
             recipeId,
             this.state.recipes
@@ -114,16 +126,16 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         });
     }
 
-    handleExpandClick(recipeId:number):void {
+    handleExpandClick(recipeId: number): void {
         this.setState({
             // expanded: !(this.state.expandedId === recipeId && this.state.expanded),
             // expanded: this.state.expandedId !== recipeId || !this.state.expanded,
             expanded: this.state.expandedId === recipeId ? !this.state.expanded : true,
             expandedId: recipeId
-        }); 
+        });
     };
 
-    handleAddRecipe():void {
+    handleAddRecipe(): void {
         const recipes = this.state.recipes;
         const recipesIds: number[] = [];
 
@@ -146,20 +158,49 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         });
     }
 
+    handleEdit(event: any) {
+        this.toggleEditMode(event);
+        this.recipesBeforeChange = this.state.recipes;
+    }
+
+    recipesBeforeChange: IRecipe[] = [];
+
+    handleUndo(event:any) {
+        this.toggleEditMode(event);
+        this.setState({
+            recipes: this.recipesBeforeChange
+        });
+    }
+
+    toggleEditMode(event: any): void {
+        const currentRecipe = event.currentTarget.closest('.recipe');        
+
+        currentRecipe.classList.toggle('activate-edit-mode');
+        currentRecipe.querySelectorAll('input, textarea')
+            .forEach(input => input.toggleAttribute('disabled'));
+    }
+
+
     render() {
         return (
             <React.Fragment>
-                <AddRecipeButton handleAddRecipe={this.handleAddRecipe} />
+                <div className="recipe-button-add-container">
+                    <Logo />
+                    <AddRecipeButton handleAddRecipe={this.handleAddRecipe} />
+                </div>
                 <div className="recipe-container">
                     <Recipe state={this.state}
-                    handleChangeTitle={this.handleChangeTitle}
-                    handleChangeIngredients={this.handleChangeIngredients}
-                    handleChangeInstructions={this.handleChangeInstructions}
-                    handleSubmit={this.handleSubmit}
-                    handleExpandClick={this.handleExpandClick}
-                    handleDelete={this.handleDelete} />
+                        handleChangeTitle={this.handleChangeTitle}
+                        handleChangeIngredients={this.handleChangeIngredients}
+                        handleChangeInstructions={this.handleChangeInstructions}
+                        handleSubmit={this.handleSubmit}
+                        handleExpandClick={this.handleExpandClick}
+                        handleDelete={this.handleDelete}
+                        handleUndo={this.handleUndo}
+                        handleEdit={this.handleEdit} />
                 </div>
-            </React.Fragment>    
+                <Footer />
+            </React.Fragment>
         )
     }
 }

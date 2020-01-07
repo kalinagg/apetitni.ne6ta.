@@ -1,0 +1,20 @@
+$footer-border: #ccc;
+$footer-color: #666;
+$footer-size: 14px;
+
+.footer {
+    font-family: 'Source Sans Pro', sans-serif;
+    padding: 12px 0;
+    text-align: center;
+
+    .logo {
+        width: 200px;
+    }
+
+    .footer-text {
+        color: $footer-color;
+        font-size: $footer-size;
+        line-height: $footer-size;
+        margin: 0;
+    }
+}
