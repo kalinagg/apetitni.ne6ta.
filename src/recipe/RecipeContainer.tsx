@@ -180,7 +180,6 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         const formData = new FormData();
         
         formData.append('image', event.target.files[0]);            
-        formData.append('recipeId', recipeId);
 
         return fetch('./upload', {
             method: 'POST',

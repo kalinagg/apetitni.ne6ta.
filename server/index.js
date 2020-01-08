@@ -4,6 +4,7 @@ const pino = require('express-pino-logger')();
 const fs = require('fs');
 const fileUpload = require('express-fileupload');
 const path = require('path');
+const uuidv4 = require('uuid/v4');
 
 const app = express();
 app.use(bodyParser.json());
@@ -30,9 +31,8 @@ app.post('/upload', (req, res) => {
   }
 
   const image = req.files.image;
-  const recipeId = req.body.recipeId;
   const ext = path.extname(image.name);
-  const imagePath = 'img-food/' + 'img-' + recipeId + ext;
+  const imagePath = 'img-food/' + 'img-' + uuidv4() + ext;
 
   image.mv('public/' + imagePath, err => {
     if (err) {
