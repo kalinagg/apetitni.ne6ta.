@@ -27,6 +27,7 @@ export interface IRecipeContainerState {
     handleDelete(recipeId: number, event: any): void;
     handleEdit(event): void;
     handleUndo(event): void;
+    uploadImage(event: React.ChangeEvent<HTMLInputElement>, recipeId: number): Promise<void>;
     classes: any;
 }
 
@@ -80,10 +81,15 @@ class Recipe extends Component<IRecipeContainerState, any> {
                 <Card className={clsx(classes.card, "recipe")} key={recipe.id}>
                     <CardContent className={clsx(classes.cardContent)}>
                         <div className="recipe-image-container">
-                            <label htmlFor="image-upload">
+                            <label htmlFor={"image-upload-" + recipe.id}>
                                 <img className="recipe-image" src={recipe.img} alt={recipe.title} />
                             </label>
-                            <input type="file" id="image-upload" className="hidden" />
+                            <input
+                                type="file"
+                                name="image"
+                                id={"image-upload-" + recipe.id}
+                                className="hidden"
+                                onChange={e => this.props.uploadImage(e, recipe.id)} />
                         </div>
                         <div className="recipe-input-container">
                             <div className="recipe-input">

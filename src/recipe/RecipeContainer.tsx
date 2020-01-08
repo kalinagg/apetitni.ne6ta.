@@ -26,6 +26,7 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
         this.handleAddRecipe = this.handleAddRecipe.bind(this);
         this.handleUndo = this.handleUndo.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.uploadImage = this.uploadImage.bind(this);
     }
 
     componentDidMount() {
@@ -137,24 +138,19 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
 
     handleAddRecipe(): void {
         const recipes = this.state.recipes;
-        const recipesIds: number[] = [];
-
-        recipes.forEach(r => {
-            recipesIds.push(r.id);
-        });
 
         const newRecipe = {
             id: recipes.length ? Math.max(...recipes.map(r => r.id)) + 1 : 1,
             title: '',
             instructions: '',
-            img: 'img_food/default.jpg',
+            img: 'img-food/default.jpg',
             ingredients: []
         }
 
         this.setState({
             recipes: [
                 newRecipe,
-                ...this.state.recipes]
+                ...recipes]
         });
     }
 
@@ -180,6 +176,27 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
             .forEach(input => input.toggleAttribute('disabled'));
     }
 
+    uploadImage(event, recipeId): Promise<void> {
+        const formData = new FormData();
+        
+        formData.append('image', event.target.files[0]);            
+        formData.append('recipeId', recipeId);
+
+        return fetch('./upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(r => r.json())
+        .then(imagePathArr => {
+            this.setState({
+                recipes: this.updateRecipeById(
+                    recipeId,
+                    this.state.recipes,
+                    r => r.img = imagePathArr[0] 
+                )
+            });
+        });
+    }
 
     render() {
         return (
@@ -197,7 +214,8 @@ export default class RecipeContainer extends Component<any, IRecipeContainer> {
                         handleExpandClick={this.handleExpandClick}
                         handleDelete={this.handleDelete}
                         handleUndo={this.handleUndo}
-                        handleEdit={this.handleEdit} />
+                        handleEdit={this.handleEdit}
+                        uploadImage={this.uploadImage} />
                 </div>
                 <Footer />
             </React.Fragment>
