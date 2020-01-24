@@ -1,0 +1,21 @@
+$text-color:   #666;
+$border-color: #ccc;
+$shadow-color: #bbb;
+
+.recipe-thumbnail {
+    h2 {
+        font-size: 15px;
+        font-family: 'Source Sans Pro', sans-serif;
+        color: $text-color;
+        text-align: center;
+        line-height: 1.2em;
+        text-transform: uppercase;
+        margin: 12px 0 0;
+    }
+
+    $image-spacing: 4%;
+
+    .recipe-image {
+        width: 100%;
+    }
+}

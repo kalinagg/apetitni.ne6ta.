@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './Recipe.scss';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -6,38 +6,12 @@ import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import ShareIcon from '@material-ui/icons/Share';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
-import AddIcon from '@material-ui/icons/Add';
-import Fab from '@material-ui/core/Fab';
 import UndoIcon from '@material-ui/icons/Undo';
-
-export interface IRecipeContainerState {
-    state: IRecipeContainer;
-    handleSubmit(event: React.FormEvent<HTMLElement>): void;
-    handleChangeTitle(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void;
-    handleChangeIngredients(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void;
-    handleChangeInstructions(recipeId: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void;
-    handleExpandClick(recipeId: number): void;
-    handleDelete(recipeId: number, event: any): void;
-    handleEdit(event): void;
-    handleUndo(event): void;
-    uploadImage(event: React.ChangeEvent<HTMLInputElement>, recipeId: number): Promise<void>;
-    classes: any;
-}
-
-export interface IRecipeContainer {
-    error?: { message: string };
-    isLoaded: boolean;
-    recipes: IRecipe[];
-    expanded: boolean;
-    expandedId: number;
-}
 
 export interface IRecipe {
     id: number;
@@ -47,132 +21,170 @@ export interface IRecipe {
     instructions: string;
 }
 
-export class AddRecipeButton extends Component<any, any> {    
-    render() {
-        return (
-            <Fragment>
-                <Fab
-                    size="small"
-                    color="secondary"
-                    aria-label="Add Recipe"
-                    style={{background: '#f33'}}
-                    onClick={() => this.props.handleAddRecipe()}>
-                    <AddIcon />
-                </Fab>
-            </Fragment>
-        );
-    }
+export interface IRecipeProps {
+    recipe: IRecipe;
+    classes: any;
+    handleSubmit(event: React.FormEvent<HTMLElement>): void;
+    handleDelete(recipeId: number, event: any): void;
 }
 
-class Recipe extends Component<IRecipeContainerState, any> {
+class Recipe extends Component<IRecipeProps, IRecipe> {
+    constructor(props: IRecipeProps) {
+        super(props);
+        this.state = props.recipe;
+
+        this.handleChangeTitle = this.handleChangeTitle.bind(this);
+        this.handleChangeIngredients = this.handleChangeIngredients.bind(this);
+        this.handleChangeInstructions = this.handleChangeInstructions.bind(this);
+        this.uploadImage = this.uploadImage.bind(this);
+        this.handleUndo = this.handleUndo.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
+    }
+
+    handleChangeTitle(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+        this.setState({
+            title: event.target.value            
+        });
+    }
+
+    handleChangeIngredients(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+        this.setState({
+            ingredients: event.target.value.split('\r\n')        
+        });
+    }
+
+    handleChangeInstructions(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {        
+        this.setState({
+            instructions: event.target.value           
+        });
+    }
+
+    uploadImage(event): Promise<void> {
+        const formData = new FormData();
+        
+        formData.append('image', event.target.files[0]);            
+
+        return fetch('./upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(r => r.json())
+        .then(imagePathArr => {
+            this.setState({
+                img: imagePathArr[0]            
+            });
+        });
+    }
+
+    handleEdit(event: any) {
+        this.toggleEditMode(event);
+        this.recipeBeforeChange = this.state;
+    }
+
+    recipeBeforeChange: any = {};
+
+    handleUndo(event:any) {
+        this.toggleEditMode(event);
+        this.setState(this.recipeBeforeChange);
+    }
+
+    toggleEditMode(event: any): void {
+        const currentRecipe = event.currentTarget.closest('.recipe');        
+
+        currentRecipe.classList.toggle('activate-edit-mode');
+        currentRecipe.querySelectorAll('input, textarea')
+            .forEach(input => input.toggleAttribute('disabled'));
+    }
+
     render() {
-        const { error, isLoaded, recipes, expanded, expandedId } = this.props.state;
-        if (error) {
-            return <div>Error: {error.message}</div>;
-        }
-
-        if (!isLoaded) {
-            return <div>Loading ...</div>
-        }
-
+        const recipe = this.state;
         const classes = this.props.classes;
+
         return (
-            recipes.map(recipe => (
-                <Card className={clsx(classes.card, "recipe")} key={recipe.id}>
+                <Card className={clsx(classes.card, "recipe")} key={recipe.id}>                    
                     <CardContent className={clsx(classes.cardContent)}>
-                        <div className="recipe-image-container">
-                            <label htmlFor={"image-upload-" + recipe.id}>
-                                <img className="recipe-image" src={recipe.img} alt={recipe.title} />
-                            </label>
-                            <input
-                                type="file"
-                                name="image"
-                                id={"image-upload-" + recipe.id}
-                                className="hidden"
-                                onChange={e => this.props.uploadImage(e, recipe.id)} />
-                        </div>
-                        <div className="recipe-input-container">
-                            <div className="recipe-input">
-                                <TextField
+                        <div className="recipe-container">
+                            <div className="recipe-image-container">
+                                <label htmlFor={"image-upload-" + recipe.id}>
+                                    <img className="recipe-image" src={recipe.img} alt={recipe.title} />
+                                </label>
+                                <input
                                     disabled
-                                    margin="dense"
-                                    fullWidth
-                                    size="small"
-                                    className="input-field title"
-                                    id={'title-' + recipe.id}
-                                    name={'title-' + recipe.id}
-                                    label="Title"
-                                    variant="outlined"
-                                    value={recipe.title}
-                                    onChange={e => this.props.handleChangeTitle(recipe.id, e)} />  
+                                    type="file"
+                                    name="image"
+                                    id={"image-upload-" + recipe.id}
+                                    className="hidden"
+                                    onChange={e => this.uploadImage(e)} />
                             </div>
-                            <hr className="devider" />
-                            <div className="recipe-input">
-                                <TextField
-                                    disabled
-                                    margin="dense"
-                                    multiline
-                                    fullWidth
-                                    className="input-field"
-                                    id={'ingredients-' + recipe.id}
-                                    name={'ingredients-' + recipe.id}
-                                    label="Ingredients"
-                                    variant="outlined"                                
-                                    value={recipe.ingredients.join('\r\n')}
-                                    onChange={e => this.props.handleChangeIngredients(recipe.id, e)} />     
-                            </div>                    
-                        </div>
-                    </CardContent>
-                    <CardActions className={clsx(classes.cardActions)} disableSpacing>
-                        <IconButton className="edit-icon" aria-label="Edit"
-                            onClick={ e => this.props.handleEdit(e) }>
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton className="undo-icon" aria-label="Undo"
-                            onClick={ e => this.props.handleUndo(e) }>
-                            <UndoIcon />
-                        </IconButton>
-                        <IconButton className="save-icon" aria-label="Save"
-                            onClick={e => this.props.handleSubmit(e)}>
-                            <SaveAltIcon />
-                        </IconButton>
-                        <IconButton className="share-icon" aria-label="Share">
-                            <ShareIcon />
-                        </IconButton>
-                        <IconButton className="delete-icon" aria-label="Delete"
-                            onClick={e => this.props.handleDelete(recipe.id, e)}>
-                            <DeleteIcon />
-                        </IconButton>                    
-                        <IconButton
-                            className={clsx(classes.expand, {
-                                [classes.expandOpen]: expandedId === recipe.id && expanded,
-                            })}
-                            onClick={() => this.props.handleExpandClick(recipe.id)}
-                            aria-expanded={expandedId === recipe.id && expanded}
-                            aria-label="Show more">
-                            <ExpandMoreIcon />
-                        </IconButton>
-                    </CardActions>
-                    <Collapse in={expandedId === recipe.id && expanded} timeout="auto" unmountOnExit>
-                        <CardContent>
-                            <div className="recipe-input">
-                                <TextField
-                                    disabled
-                                    margin="dense"
-                                    multiline
-                                    fullWidth
-                                    className="input-field instructions"
-                                    id={'instructions-' + recipe.id}
-                                    name={'instructions-' + recipe.id}
-                                    label="Instructions"
-                                    variant="outlined"
-                                    value={recipe.instructions}
-                                    onChange={e => this.props.handleChangeInstructions(recipe.id, e)} />
-                            </div>                        
-                        </CardContent>
-                    </Collapse>
+                            <div className="recipe-input-container">
+                                <CardActions className={clsx(classes.cardActions)} disableSpacing>
+                                    <IconButton className="edit-icon" aria-label="Edit"
+                                        onClick={ e => this.handleEdit(e) }>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton className="undo-icon" aria-label="Undo"
+                                        onClick={ e => this.handleUndo(e) }>
+                                        <UndoIcon />
+                                    </IconButton>
+                                    <IconButton className="save-icon" aria-label="Save"
+                                        onClick={e => this.props.handleSubmit(e)}>
+                                        <SaveAltIcon />
+                                    </IconButton>
+                                    <IconButton className="share-icon" aria-label="Share">
+                                        <ShareIcon />
+                                    </IconButton>
+                                    <IconButton className="delete-icon" aria-label="Delete"
+                                        onClick={e => this.props.handleDelete(recipe.id, e)}>
+                                        <DeleteIcon />
+                                    </IconButton>                        
+                                </CardActions>
+                                <div className="recipe-input">
+                                    <TextField
+                                        disabled
+                                        margin="dense"
+                                        fullWidth
+                                        size="small"
+                                        className="input-field title"
+                                        id={'title-' + recipe.id}
+                                        name={'title-' + recipe.id}
+                                        label="Title"
+                                        variant="outlined"
+                                        value={recipe.title}
+                                        onChange={e => this.handleChangeTitle(e)} />
+                                </div>
+                                <hr className="devider" />
+                                <div className="recipe-input">
+                                    <TextField
+                                        disabled
+                                        margin="dense"
+                                        multiline
+                                        fullWidth
+                                        className="input-field"
+                                        id={'ingredients-' + recipe.id}
+                                        name={'ingredients-' + recipe.id}
+                                        label="Ingredients"
+                                        variant="outlined"                                
+                                        value={recipe.ingredients.join('\r\n')}
+                                        onChange={e => this.handleChangeIngredients(e)} />     
+                                </div>
+                            </div>
+                        </div>                        
+                        <div className="recipe-input">
+                            <TextField
+                                disabled
+                                margin="dense"
+                                multiline
+                                fullWidth
+                                className="input-field instructions"
+                                id={'instructions-' + recipe.id}
+                                name={'instructions-' + recipe.id}
+                                label="Instructions"
+                                variant="outlined"
+                                value={recipe.instructions}
+                                onChange={e => this.handleChangeInstructions(e)} />
+                        </div>                   
+                    </CardContent>                                        
                 </Card>
-            ))
         );
     }
 }
@@ -183,24 +195,13 @@ export default withStyles(theme => ({
         borderRadius: 0,
         border: '1px solid #eee'
     },
-    cardContent: {
-        display: 'flex',
-        justifyContent: 'space-between',
+    cardContent: {    
+        '&:last-child': {
+            paddingBottom: '16px',
+        },
     },
     cardActions: {
-        justifyContent: 'space-between',
-    },
-    media: {
-      height: 0,
-      paddingTop: '56.25%', // 16:9
-    },
-    expand: {
-      transform: 'rotate(0deg)',
-      transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-      }),
-    },
-    expandOpen: {
-      transform: 'rotate(180deg)',
-    }
+        justifyContent: 'right',
+        padding: 0,
+    },    
   }))(Recipe);

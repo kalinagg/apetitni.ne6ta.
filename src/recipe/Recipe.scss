@@ -43,12 +43,6 @@ $shadow-color: #bbb;
 }
 
 .recipe {
-    margin-bottom: 20px;
-
-    &:last-child {
-        margin-bottom: 0;
-    }
-
     &.activate-edit-mode {
         @extend %activate-edit-mode;
     }
@@ -67,6 +61,10 @@ $shadow-color: #bbb;
         }
     }
 
+    .recipe-container {
+        display: flex;
+    }
+
     .recipe-input {
         label {
             visibility: hidden;
@@ -82,7 +80,7 @@ $shadow-color: #bbb;
     .recipe-image-container {
         width: 40%;
 
-        $image-spacing: 4%;
+        $image-spacing: 5%;
         .recipe-image {
             border: 1px solid $border-color;
             box-shadow: 3px 5px 4px $shadow-color;
