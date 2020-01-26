@@ -24,7 +24,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.handleSubmit = this.handleSubmit.bind(this);        
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAddRecipe = this.handleAddRecipe.bind(this);        
-        this.handleShowRecipe = this.handleShowRecipe.bind(this);
+        this.showRecipeDetail = this.showRecipeDetail.bind(this);
     }
 
     componentDidMount() {
@@ -50,25 +50,20 @@ export default class RecipeList extends Component<any, IRecipeList> {
             );
     }
 
-    updateRecipeById(recipeId: number, recipes: IRecipe[], changeRecipe: (recipe: IRecipe) => void): IRecipe[] {
-        const recipeIndex = recipes.findIndex(r => r.id === recipeId);
+    updateRecipeById(recipe: IRecipe, recipes: IRecipe[]) {
+        const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
 
         if (recipeIndex < 0) {
-            throw new Error("Recipe not found:" + recipeId);
+            throw new Error("Recipe not found:" + recipe.id);
         }
 
-        const newRecipe = Object.assign({}, recipes[recipeIndex]);
-        changeRecipe(newRecipe);
-
+        const newRecipe = Object.assign({}, recipe);
+        
         const newRecipes = [...recipes];
         newRecipes.splice(recipeIndex, 1, newRecipe);
 
         return newRecipes;
-    }
-
-    deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
-        return recipes.filter(r => r.id !== recipeId);
-    }
+    }    
 
     saveRecipes(recipes: IRecipe[]): Promise<void> {
         return fetch('./recipes', {
@@ -78,9 +73,22 @@ export default class RecipeList extends Component<any, IRecipeList> {
         }).then(r => { console.log(r.statusText) });
     }
 
-    handleSubmit(event: React.FormEvent<HTMLElement>): void {
+    handleSubmit(event: React.FormEvent<HTMLElement>, recipe: IRecipe): void {
+        const newRecipes = this.updateRecipeById(
+            recipe,
+            this.state.recipes
+        );
+
         // this.toggleEditMode(event);
-        this.saveRecipes(this.state.recipes);
+        this.saveRecipes(newRecipes).then(() => {
+            this.setState({
+                recipes: newRecipes
+            });
+        });
+    }
+
+    deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
+        return recipes.filter(r => r.id !== recipeId);
     }
 
     handleDelete(recipeId: number, event: any): void {
@@ -116,7 +124,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
 
     selectedRecipe: any = {};
 
-    handleShowRecipe(recipe: IRecipe): void {
+    showRecipeDetail(recipe: IRecipe): void {
         this.setState({
             listView: false
         });
@@ -144,7 +152,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
                         <RecipeThumbnail
                             key={r.id}
                             recipe={r}
-                            handleShowRecipe={this.handleShowRecipe} />
+                            showRecipeDetail={this.showRecipeDetail} />
                     ))}
                 </div>              
             );

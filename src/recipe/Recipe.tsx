@@ -24,7 +24,7 @@ export interface IRecipe {
 export interface IRecipeProps {
     recipe: IRecipe;
     classes: any;
-    handleSubmit(event: React.FormEvent<HTMLElement>): void;
+    handleSubmit(event: React.FormEvent<HTMLElement>, recipe: IRecipe): void;
     handleDelete(recipeId: number, event: any): void;
 }
 
@@ -127,7 +127,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                         <UndoIcon />
                                     </IconButton>
                                     <IconButton className="save-icon" aria-label="Save"
-                                        onClick={e => this.props.handleSubmit(e)}>
+                                        onClick={e => this.props.handleSubmit(e, recipe)}>
                                         <SaveAltIcon />
                                     </IconButton>
                                     <IconButton className="share-icon" aria-label="Share">

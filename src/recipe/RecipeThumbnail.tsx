@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 interface IRecipeThumbnailProps {
     recipe: IRecipe;
     classes: any;
-    handleShowRecipe(recipe: IRecipe): void;
+    showRecipeDetail(recipe: IRecipe): void;
 }
 
 class RecipeThumbnail extends Component<IRecipeThumbnailProps, any> {
@@ -20,7 +20,7 @@ class RecipeThumbnail extends Component<IRecipeThumbnailProps, any> {
         return (
             <Card
                 className={clsx(classes.card, "recipe-thumbnail")}                
-                onClick={() => this.props.handleShowRecipe(recipe)}>
+                onClick={() => this.props.showRecipeDetail(recipe)}>
                 <CardContent className={clsx(classes.cardContent)}>
                     <div className="recipe-image-container">
                         <img className="recipe-image" src={recipe.img} alt={recipe.title} />      
