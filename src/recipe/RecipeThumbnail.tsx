@@ -18,9 +18,9 @@ class RecipeThumbnail extends Component<IRecipeThumbnailProps, any> {
         const classes = this.props.classes;
 
         return (
-            <Card
+            <Card                
                 className={clsx(classes.card, "recipe-thumbnail")}                
-                onClick={() => this.props.showRecipeDetail(recipe)}>
+                onClick={() => this.props.showRecipeDetail(recipe)}>                        
                 <CardContent className={clsx(classes.cardContent)}>
                     <div className="recipe-image-container">
                         <img className="recipe-image" src={recipe.img} alt={recipe.title} />      

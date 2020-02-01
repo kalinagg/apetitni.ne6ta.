@@ -101,90 +101,90 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         const classes = this.props.classes;
 
         return (
-                <Card className={clsx(classes.card, "recipe")} key={recipe.id}>                    
-                    <CardContent className={clsx(classes.cardContent)}>
-                        <div className="recipe-container">
-                            <div className="recipe-image-container">
-                                <label htmlFor={"image-upload-" + recipe.id}>
-                                    <img className="recipe-image" src={recipe.img} alt={recipe.title} />
-                                </label>
-                                <input
-                                    disabled
-                                    type="file"
-                                    name="image"
-                                    id={"image-upload-" + recipe.id}
-                                    className="hidden"
-                                    onChange={e => this.uploadImage(e)} />
-                            </div>
-                            <div className="recipe-input-container">
-                                <CardActions className={clsx(classes.cardActions)} disableSpacing>
-                                    <IconButton className="edit-icon" aria-label="Edit"
-                                        onClick={ e => this.handleEdit(e) }>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton className="undo-icon" aria-label="Undo"
-                                        onClick={ e => this.handleUndo(e) }>
-                                        <UndoIcon />
-                                    </IconButton>
-                                    <IconButton className="save-icon" aria-label="Save"
-                                        onClick={e => this.props.handleSubmit(e, recipe)}>
-                                        <SaveAltIcon />
-                                    </IconButton>
-                                    <IconButton className="share-icon" aria-label="Share">
-                                        <ShareIcon />
-                                    </IconButton>
-                                    <IconButton className="delete-icon" aria-label="Delete"
-                                        onClick={e => this.props.handleDelete(recipe.id, e)}>
-                                        <DeleteIcon />
-                                    </IconButton>                        
-                                </CardActions>
-                                <div className="recipe-input">
-                                    <TextField
-                                        disabled
-                                        margin="dense"
-                                        fullWidth
-                                        size="small"
-                                        className="input-field title"
-                                        id={'title-' + recipe.id}
-                                        name={'title-' + recipe.id}
-                                        label="Title"
-                                        variant="outlined"
-                                        value={recipe.title}
-                                        onChange={e => this.handleChangeTitle(e)} />
-                                </div>
-                                <hr className="devider" />
-                                <div className="recipe-input">
-                                    <TextField
-                                        disabled
-                                        margin="dense"
-                                        multiline
-                                        fullWidth
-                                        className="input-field"
-                                        id={'ingredients-' + recipe.id}
-                                        name={'ingredients-' + recipe.id}
-                                        label="Ingredients"
-                                        variant="outlined"                                
-                                        value={recipe.ingredients.join('\r\n')}
-                                        onChange={e => this.handleChangeIngredients(e)} />     
-                                </div>
-                            </div>
-                        </div>                        
-                        <div className="recipe-input">
-                            <TextField
+            <Card className={clsx(classes.card, "recipe")} key={recipe.id}>                    
+                <CardContent className={clsx(classes.cardContent)}>
+                    <div className="recipe-container">
+                        <div className="recipe-image-container">
+                            <label htmlFor={"image-upload-" + recipe.id}>
+                                <img className="recipe-image" src={recipe.img} alt={recipe.title} />
+                            </label>
+                            <input
                                 disabled
-                                margin="dense"
-                                multiline
-                                fullWidth
-                                className="input-field instructions"
-                                id={'instructions-' + recipe.id}
-                                name={'instructions-' + recipe.id}
-                                label="Instructions"
-                                variant="outlined"
-                                value={recipe.instructions}
-                                onChange={e => this.handleChangeInstructions(e)} />
-                        </div>                   
-                    </CardContent>                                        
-                </Card>
+                                type="file"
+                                name="image"
+                                id={"image-upload-" + recipe.id}
+                                className="hidden"
+                                onChange={e => this.uploadImage(e)} />
+                        </div>
+                        <div className="recipe-input-container">
+                            <CardActions className={clsx(classes.cardActions)} disableSpacing>
+                                <IconButton className="edit-icon" aria-label="Edit"
+                                    onClick={ e => this.handleEdit(e) }>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton className="undo-icon" aria-label="Undo"
+                                    onClick={ e => this.handleUndo(e) }>
+                                    <UndoIcon />
+                                </IconButton>
+                                <IconButton className="save-icon" aria-label="Save"
+                                    onClick={e => this.props.handleSubmit(e, recipe)}>
+                                    <SaveAltIcon />
+                                </IconButton>
+                                <IconButton className="share-icon" aria-label="Share">
+                                    <ShareIcon />
+                                </IconButton>
+                                <IconButton className="delete-icon" aria-label="Delete"
+                                    onClick={e => this.props.handleDelete(recipe.id, e)}>
+                                    <DeleteIcon />
+                                </IconButton>                        
+                            </CardActions>
+                            <div className="recipe-input">
+                                <TextField
+                                    disabled
+                                    margin="dense"
+                                    fullWidth
+                                    size="small"
+                                    className="input-field title"
+                                    id={'title-' + recipe.id}
+                                    name={'title-' + recipe.id}
+                                    label="Title"
+                                    variant="outlined"
+                                    value={recipe.title}
+                                    onChange={e => this.handleChangeTitle(e)} />
+                            </div>
+                            <hr className="devider" />
+                            <div className="recipe-input">
+                                <TextField
+                                    disabled
+                                    margin="dense"
+                                    multiline
+                                    fullWidth
+                                    className="input-field"
+                                    id={'ingredients-' + recipe.id}
+                                    name={'ingredients-' + recipe.id}
+                                    label="Ingredients"
+                                    variant="outlined"                                
+                                    value={recipe.ingredients.join('\r\n')}
+                                    onChange={e => this.handleChangeIngredients(e)} />     
+                            </div>
+                        </div>
+                    </div>                        
+                    <div className="recipe-input">
+                        <TextField
+                            disabled
+                            margin="dense"
+                            multiline
+                            fullWidth
+                            className="input-field instructions"
+                            id={'instructions-' + recipe.id}
+                            name={'instructions-' + recipe.id}
+                            label="Instructions"
+                            variant="outlined"
+                            value={recipe.instructions}
+                            onChange={e => this.handleChangeInstructions(e)} />
+                    </div>                   
+                </CardContent>                                        
+            </Card>
         );
     }
 }

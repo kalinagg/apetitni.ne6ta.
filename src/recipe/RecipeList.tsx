@@ -25,6 +25,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAddRecipe = this.handleAddRecipe.bind(this);        
         this.showRecipeDetail = this.showRecipeDetail.bind(this);
+        this.showRecipeList = this.showRecipeList.bind(this);
     }
 
     componentDidMount() {
@@ -97,11 +98,14 @@ export default class RecipeList extends Component<any, IRecipeList> {
             this.state.recipes
         );
 
-        this.saveRecipes(newRecipes).then(() => {
-            this.setState({
-                recipes: newRecipes
-            });
+        this.setState({
+            recipes: newRecipes
         });
+
+        this.showRecipeList();
+        
+        this.saveRecipes(newRecipes);
+
     }
 
     handleAddRecipe(): void {
@@ -125,11 +129,18 @@ export default class RecipeList extends Component<any, IRecipeList> {
     selectedRecipe: any = {};
 
     showRecipeDetail(recipe: IRecipe): void {
-        this.setState({
-            listView: false
-        });
-
+        this.setListView();
         this.selectedRecipe = recipe;
+    }
+
+    showRecipeList(): void {
+        this.setListView();
+    }
+
+    setListView(): void {
+        this.setState({
+            listView: !this.state.listView
+        });
     }
 
     render() {
@@ -168,7 +179,10 @@ export default class RecipeList extends Component<any, IRecipeList> {
 
         return (
             <React.Fragment>
-                <Header handleAddRecipe={this.handleAddRecipe} />
+                <Header
+                    listView={this.state.listView}
+                    showRecipeList={this.showRecipeList}
+                    handleAddRecipe={this.handleAddRecipe} />
                 {currentView}              
             </React.Fragment>
         )

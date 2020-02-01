@@ -4,15 +4,25 @@ import Fab from '@material-ui/core/Fab';
 import Logo from '../logo/Logo';
 import './Header.scss';
 import clsx from 'clsx';
+import IconButton from '@material-ui/core/IconButton';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 interface IHeaderProps {
+    listView: boolean;
+    showRecipeList(): void;
     handleAddRecipe(): void;
 }
 
 export default class Header extends Component<IHeaderProps> {
     render() {
+        console.log('this.props.listView', this.props.listView);
         return (
             <div className="header-container">
+                <IconButton
+                    className={clsx(this.props.listView && "back-arrow-hidden")}
+                    onClick={this.props.showRecipeList}>
+                    <KeyboardBackspaceIcon style={{color: '#666'}} />
+                </IconButton>                
                 <Logo />
                 <Fab
                     className={clsx("add-icon")}
