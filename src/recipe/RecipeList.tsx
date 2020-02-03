@@ -5,12 +5,24 @@ import RecipeThumbnail from './RecipeThumbnail';
 import './RecipeList.scss';
 import SnackbarMessage from '../snackbar/SnackbarMessage';
 
+enum SnackbarSeverity {
+    Success = 'success',
+    Info = 'info',
+    Warning = 'warning',
+    Error = 'error',
+}
+
+export type Severity = 'success' | 'info' | 'warning' | 'error';
+
 export interface IRecipeList {
     error?: { message: string };
     isLoaded: boolean;
     recipes: IRecipe[];
     listView: boolean;
     snackbarOpen: boolean;
+    snackbarSeverity: Severity;
+    snackbarMessage: string;
+    snackbarUndo: boolean;
 }
 
 export default class RecipeList extends Component<any, IRecipeList> {
@@ -21,7 +33,10 @@ export default class RecipeList extends Component<any, IRecipeList> {
             isLoaded: false,
             recipes: [],
             listView: true,
-            snackbarOpen: false
+            snackbarOpen: false, 
+            snackbarSeverity: SnackbarSeverity.Error,
+            snackbarMessage: '',
+            snackbarUndo: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);        
@@ -59,7 +74,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
 
         if (recipeIndex < 0) {
-            throw new Error("Recipe not found:" + recipe.id);
+            throw new Error('Recipe not found:' + recipe.id);
         }
 
         const newRecipe = Object.assign({}, recipe);
@@ -70,12 +85,37 @@ export default class RecipeList extends Component<any, IRecipeList> {
         return newRecipes;
     }    
 
-    saveRecipes(recipes: IRecipe[]): Promise<void> {
+    saveRecipes(recipes: IRecipe[], snackbarMessage: string, snackbarUndo: boolean): Promise<void> {
         return fetch('./recipes', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(recipes)
-        }).then(r => { this.openSnackbar(); });
+        })
+        .then(response => {
+            if(!response.ok) {
+                throw new Error('Something went wrong, please try again later!');
+            }
+            
+            this.openSnackbar(SnackbarSeverity.Success, snackbarMessage, snackbarUndo);
+        })
+        .catch((error) => {
+            this.openSnackbar(SnackbarSeverity.Error, error.message, false);
+        });
+    }
+
+    openSnackbar(severity: Severity, message: string, undo: boolean) {
+        this.setState({
+            snackbarOpen: true,
+            snackbarSeverity: severity,
+            snackbarMessage: message,
+            snackbarUndo: undo
+        });
+    }
+
+    closeSnackbar() {    
+        this.setState({
+            snackbarOpen: false
+        }); 
     }
 
     handleSubmit(event: React.FormEvent<HTMLElement>, recipe: IRecipe): void {
@@ -85,7 +125,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         );
 
         // this.toggleEditMode(event);
-        this.saveRecipes(newRecipes).then(() => {
+        this.saveRecipes(newRecipes, 'Recipe is saved!', false).then(() => {
             this.setState({
                 recipes: newRecipes
             });
@@ -107,9 +147,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         });
 
         this.showRecipeList();
-        
-        this.saveRecipes(newRecipes);
-
+        this.saveRecipes(newRecipes, 'Recipe is removed!', true);
     }
 
     handleAddRecipe(): void {
@@ -145,18 +183,6 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.setState({
             listView: !this.state.listView
         });
-    }
-
-    openSnackbar() {
-        this.setState({
-            snackbarOpen: true
-        });
-    }
-
-    closeSnackbar(event?: React.SyntheticEvent) {    
-        this.setState({
-            snackbarOpen: false
-        }); 
     }
 
     render() {
@@ -202,6 +228,9 @@ export default class RecipeList extends Component<any, IRecipeList> {
                 {currentView}
                 <SnackbarMessage
                     open={this.state.snackbarOpen}
+                    severity={this.state.snackbarSeverity}
+                    message={this.state.snackbarMessage}
+                    undo={this.state.snackbarUndo}
                     closeSnackbar={this.closeSnackbar} />
             </React.Fragment>
         )

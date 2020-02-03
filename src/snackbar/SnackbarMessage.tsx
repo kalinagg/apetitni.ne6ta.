@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react';
+import clsx from 'clsx';
+import { Severity } from '../recipe/RecipeList';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
@@ -8,38 +10,47 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 interface ISnackbarProps {
-    open: boolean;
     classes: any;
-    closeSnackbar(event?: React.SyntheticEvent): void;
+    open: boolean;
+    severity: Severity;
+    message: string;
+    undo: boolean;
+    closeSnackbar(): void;
 }
 
 class SnackbarMessage extends Component<ISnackbarProps, any> {
     render() {
-        const {classes, open} = this.props;
+        const {classes, open, severity, message, undo, closeSnackbar} = this.props;
         
+        let undoButton;
+        if(undo) {
+            undoButton = <Button color="inherit" size="small">Undo</Button>;
+        }
+
         return (        
-            <Snackbar                                
-                open={open}             
-                onClose={this.props.closeSnackbar}             
+            <Snackbar
+                open={open}
+                onClose={closeSnackbar}
                 autoHideDuration={6000}>
                 <Alert
-                    onClose={this.props.closeSnackbar}
-                    // action={ 
-                    //     <Fragment>
-                    //         <Button color="inherit" size="small">Undo</Button>
-                    //         <IconButton
-                    //             aria-label="close"
-                    //             color="inherit"
-                    //             size="small">
-                    //             <CloseIcon fontSize="inherit" />
-                    //         </IconButton>
-                    //     </Fragment>                       
-                    // }
-                    className={classes.root} 
+                    onClose={closeSnackbar}
+                    action={ 
+                        <Fragment>
+                            {undoButton}
+                            <IconButton
+                                onClick={closeSnackbar}
+                                aria-label="close"
+                                color="inherit"
+                                size="small">
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        </Fragment>                       
+                    }
+                    className={clsx(classes.root)} 
                     elevation={6}
                     variant="filled"
-                    severity="success">
-                    Recipe is saved!
+                    severity={severity}>
+                    {message}
                 </Alert>
             </Snackbar>                         
         );
@@ -48,6 +59,6 @@ class SnackbarMessage extends Component<ISnackbarProps, any> {
 
 export default withStyles(theme => ({
     root: {
-        // background: '#093'
+        borderRadius: '2px'
     }
   }))(SnackbarMessage);
