@@ -15,7 +15,6 @@ interface IHeaderProps {
 
 export default class Header extends Component<IHeaderProps> {
     render() {
-        console.log('this.props.listView', this.props.listView);
         return (
             <div className="header-container">
                 <IconButton

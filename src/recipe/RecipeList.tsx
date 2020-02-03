@@ -3,12 +3,14 @@ import Recipe, { IRecipe } from './Recipe';
 import Header from '../header/Header';
 import RecipeThumbnail from './RecipeThumbnail';
 import './RecipeList.scss';
+import SnackbarMessage from '../snackbar/SnackbarMessage';
 
 export interface IRecipeList {
     error?: { message: string };
     isLoaded: boolean;
     recipes: IRecipe[];
     listView: boolean;
+    snackbarOpen: boolean;
 }
 
 export default class RecipeList extends Component<any, IRecipeList> {
@@ -18,7 +20,8 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.state = {
             isLoaded: false,
             recipes: [],
-            listView: true
+            listView: true,
+            snackbarOpen: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);        
@@ -26,6 +29,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.handleAddRecipe = this.handleAddRecipe.bind(this);        
         this.showRecipeDetail = this.showRecipeDetail.bind(this);
         this.showRecipeList = this.showRecipeList.bind(this);
+        this.closeSnackbar = this.closeSnackbar.bind(this);
     }
 
     componentDidMount() {
@@ -71,7 +75,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(recipes)
-        }).then(r => { console.log(r.statusText) });
+        }).then(r => { this.openSnackbar(); });
     }
 
     handleSubmit(event: React.FormEvent<HTMLElement>, recipe: IRecipe): void {
@@ -85,7 +89,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
             this.setState({
                 recipes: newRecipes
             });
-        });
+        });        
     }
 
     deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
@@ -143,6 +147,18 @@ export default class RecipeList extends Component<any, IRecipeList> {
         });
     }
 
+    openSnackbar() {
+        this.setState({
+            snackbarOpen: true
+        });
+    }
+
+    closeSnackbar(event?: React.SyntheticEvent) {    
+        this.setState({
+            snackbarOpen: false
+        }); 
+    }
+
     render() {
         const { error, isLoaded } = this.state;
 
@@ -183,7 +199,10 @@ export default class RecipeList extends Component<any, IRecipeList> {
                     listView={this.state.listView}
                     showRecipeList={this.showRecipeList}
                     handleAddRecipe={this.handleAddRecipe} />
-                {currentView}              
+                {currentView}
+                <SnackbarMessage
+                    open={this.state.snackbarOpen}
+                    closeSnackbar={this.closeSnackbar} />
             </React.Fragment>
         )
     }
