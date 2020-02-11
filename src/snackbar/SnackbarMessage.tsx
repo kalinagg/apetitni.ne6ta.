@@ -30,6 +30,7 @@ class SnackbarMessage extends Component<ISnackbarProps, any> {
         return (        
             <Snackbar
                 open={open}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 onClose={closeSnackbar}
                 autoHideDuration={6000}>
                 <Alert

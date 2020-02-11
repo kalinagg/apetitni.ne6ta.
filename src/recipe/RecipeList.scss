@@ -2,7 +2,7 @@ $grid-gap: 20px;
 
 .recipe-list-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     column-gap: $grid-gap;
     row-gap: $grid-gap;
     cursor: pointer;
