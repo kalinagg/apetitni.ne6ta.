@@ -14,6 +14,7 @@ import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import UndoIcon from '@material-ui/icons/Undo';
 
 export interface IRecipe {
+    error?: { message: string };
     id: number;
     ingredients: string[];
     title: string;
@@ -59,21 +60,25 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         });
     }
 
-    uploadImage(event): Promise<void> {
+    async uploadImage(event): Promise<void> {
         const formData = new FormData();
         
-        formData.append('image', event.target.files[0]);            
+        formData.append('image', event.target.files[0]);
 
-        return fetch('./upload', {
-            method: 'POST',
-            body: formData
-        })
-        .then(r => r.json())
-        .then(imagePathArr => {
+        try {
+            const response = await fetch('./upload', {
+                method: 'POST',
+                body: formData
+            });
+    
+            const imagePathArr = await response.json();
+    
             this.setState({
                 img: imagePathArr[0]            
             });
-        });
+        } catch(error) {
+            this.setState({ error });
+        }
     }
 
     handleEdit(event: any) {

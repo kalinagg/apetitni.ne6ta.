@@ -5,8 +5,8 @@ const fs = require('fs');
 const fileUpload = require('express-fileupload');
 const path = require('path');
 const uuidv4 = require('uuid/v4');
-
 const app = express();
+
 app.use(bodyParser.json());
 app.use(pino);
 app.use(fileUpload({

@@ -51,23 +51,21 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.getRecipes();
     }
 
-    getRecipes(): void {
-        fetch('./recipes')
-            .then(recipes => recipes.json())
-            .then(
-                recipes => {
-                    this.setState({
-                        isLoaded: true,
-                        recipes
-                    });
-                },
-                error => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            );
+    async getRecipes(): Promise<void> {
+        try {
+            const response = await fetch('./recipes');
+            const recipes = await response.json();
+
+            this.setState({
+                isLoaded: true,
+                recipes
+            });        
+        } catch(error) {        
+            this.setState({
+                isLoaded: true,
+                error
+            });
+        }
     }
 
     updateRecipeById(recipe: IRecipe, recipes: IRecipe[]) {
@@ -85,22 +83,22 @@ export default class RecipeList extends Component<any, IRecipeList> {
         return newRecipes;
     }    
 
-    saveRecipes(recipes: IRecipe[], snackbarMessage: string, snackbarUndo: boolean): Promise<void> {
-        return fetch('./recipes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(recipes)
-        })
-        .then(response => {
+    async saveRecipes(recipes: IRecipe[], snackbarMessage: string, snackbarUndo: boolean): Promise<void> {
+        try {
+            const response = await fetch('./recipes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(recipes)
+            });
+
             if(!response.ok) {
                 throw new Error('Something went wrong, please try again later!');
             }
-            
+
             this.openSnackbar(SnackbarSeverity.Success, snackbarMessage, snackbarUndo);
-        })
-        .catch((error) => {
+        } catch(error) {
             this.openSnackbar(SnackbarSeverity.Error, error.message, false);
-        });
+        }
     }
 
     openSnackbar(severity: Severity, message: string, undo: boolean) {
@@ -118,18 +116,18 @@ export default class RecipeList extends Component<any, IRecipeList> {
         }); 
     }
 
-    handleSubmit(event: React.FormEvent<HTMLElement>, recipe: IRecipe): void {
+    async handleSubmit(event: React.FormEvent<HTMLElement>, recipe: IRecipe): Promise<void> {
         const newRecipes = this.updateRecipeById(
             recipe,
             this.state.recipes
         );
 
+        this.setState({
+            recipes: newRecipes
+        });
+
         // this.toggleEditMode(event);
-        this.saveRecipes(newRecipes, 'Recipe is saved!', false).then(() => {
-            this.setState({
-                recipes: newRecipes
-            });
-        });        
+        await this.saveRecipes(newRecipes, 'Recipe is saved!', false);
     }
 
     deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
