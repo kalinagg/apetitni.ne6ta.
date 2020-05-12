@@ -53,7 +53,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
 
     async getRecipes(): Promise<void> {
         try {
-            const response = await fetch('./recipes');
+            const response = await fetch('/recipes');
             const recipes = await response.json();
 
             this.setState({
@@ -85,7 +85,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
 
     async saveRecipes(recipes: IRecipe[], snackbarMessage: string, snackbarUndo: boolean): Promise<void> {
         try {
-            const response = await fetch('./recipes', {
+            const response = await fetch('/recipes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(recipes)

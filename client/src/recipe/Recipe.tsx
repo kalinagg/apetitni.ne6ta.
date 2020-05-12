@@ -66,7 +66,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         formData.append('image', event.target.files[0]);
 
         try {
-            const response = await fetch('./upload', {
+            const response = await fetch('/upload', {
                 method: 'POST',
                 body: formData
             });

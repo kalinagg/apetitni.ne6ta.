@@ -1,56 +1,29 @@
 {
-  "name": "apetitnine6ta",
-  "version": "0.1.0",
-  "private": true,
-  "proxy": "http://localhost:3001",
-  "dependencies": {
-    "@material-ui/core": "^4.9.5",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.45",
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.30",
-    "@types/react": "^16.9.23",
-    "@types/react-dom": "^16.9.5",
-    "express-fileupload": "^1.1.6",
-    "node-sass": "^4.13.1",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "3.1.2",
-    "typescript": "^3.8.3",
-    "uuid": "^3.4.0"
-  },
+  "name": "apetitni.ne6ta.",
+  "version": "1.0.0",
+  "description": "apetitni.ne6ta.",
+  "main": "index.js",
   "scripts": {
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "start": "react-scripts start",
-    "server": "node-env-run server --exec nodemon | pino-colada",
-    "dev": "run-p server start"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
+  "keywords": [],
+  "author": "Kalina Georgieva",
+  "license": "ISC",
+  "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "express-pino-logger": "^4.0.0",
-    "morgan": "^1.9.1",
-    "node-env-run": "^3.0.2",
-    "nodemon": "^1.19.4",
-    "npm-run-all": "^4.1.5",
-    "pino-colada": "^1.5.1"
+    "express-fileupload": "^1.1.6",
+    "express-pino-logger": "^5.0.0",
+    "morgan": "^1.10.0",
+    "uuid": "^3.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kalinagg/apetitni.ne6ta..git"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
   }
 }
