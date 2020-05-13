@@ -1,0 +1,9 @@
+.header-container {
+    .logo {
+        width: 300px;
+
+        @media screen and (max-width: 576px) {
+            width: 60%;
+        }
+    }
+}

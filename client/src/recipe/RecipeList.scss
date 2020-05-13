@@ -1,9 +1,29 @@
 $grid-gap: 20px;
 
+@mixin gridCols($cols) {
+    grid-template-columns: repeat($cols, 1fr);
+}
+
 .recipe-list-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    @include gridCols(6);
     column-gap: $grid-gap;
-    row-gap: $grid-gap;
     cursor: pointer;
+    display: grid;
+    row-gap: $grid-gap;
+
+    @media screen and (max-width: 1024px) {
+        @include gridCols(5);
+    }
+
+    @media screen and (max-width: 768px) {
+        @include gridCols(4);
+    }
+
+    @media screen and (max-width: 576px) {
+        @include gridCols(3);
+    }
+
+    @media screen and (max-width: 411px) {
+        @include gridCols(2);
+    }
 }

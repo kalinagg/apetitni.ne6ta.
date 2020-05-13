@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import './logo.scss';
 
 export default class Logo extends Component<any, any> {
     render() {
