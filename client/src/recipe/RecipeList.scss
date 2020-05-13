@@ -12,18 +12,14 @@ $grid-gap: 20px;
     row-gap: $grid-gap;
 
     @media screen and (max-width: 1024px) {
-        @include gridCols(5);
-    }
-
-    @media screen and (max-width: 768px) {
         @include gridCols(4);
     }
 
-    @media screen and (max-width: 576px) {
+    @media screen and (max-width: 768px) {
         @include gridCols(3);
     }
 
-    @media screen and (max-width: 411px) {
+    @media screen and (max-width: 576px) {
         @include gridCols(2);
     }
 }
