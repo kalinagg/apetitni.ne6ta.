@@ -32,7 +32,7 @@ app.post('/upload', (req, res) => {
     const ext = path.extname(image.name);
     const imagePath = 'img-food/' + 'img-' + uuidv4() + ext;
  
-    image.mv('client/build/' + imagePath, err => {
+    image.mv('client/public/' + imagePath, err => {
         if (err) {
             return res.status(500).send(err);
         }
