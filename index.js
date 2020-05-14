@@ -32,13 +32,18 @@ app.post('/upload', (req, res) => {
     const ext = path.extname(image.name);
     const imagePath = 'img-food/' + 'img-' + uuidv4() + ext;
  
-    image.mv('client/build/' + imagePath, err => {
+    image.mv(imagePath, err => {
         if (err) {
             return res.status(500).send(err);
         }
 
         res.send([imagePath]);
     });
+});
+
+// Serve the image files from root
+app.get('/img-food/*', (req, res) => {
+    res.sendFile(path.join(__dirname, req.path));
 });
 
 // Serve the static files from the React app
