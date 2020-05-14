@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const pino = require('express-pino-logger')();
 const fs = require('fs');
 const fileUpload = require('express-fileupload');
 const path = require('path');
@@ -8,10 +7,8 @@ const uuidv4 = require('uuid/v4');
 const app = express();
 
 app.use(bodyParser.json());
-// app.use(pino);
 app.use(fileUpload({
-    limits: { fileSize: 50 * 1024 * 1024 },
-
+    limits: { fileSize: 50 * 1024 * 1024 }
 }));
 
 app.get('/recipes', (req, res) => {
