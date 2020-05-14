@@ -4,7 +4,6 @@ import { Severity } from '../recipe/RecipeList';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
-import './SnackbarMessage.scss';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
@@ -30,7 +29,7 @@ class SnackbarMessage extends Component<ISnackbarProps, any> {
         return (        
             <Snackbar
                 open={open}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 onClose={closeSnackbar}
                 autoHideDuration={6000}>
                 <Alert
