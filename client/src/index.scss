@@ -1,3 +1,5 @@
+$root-margin: 16px;
+
 @font-face {
   font-family: Jokerman;
   src: url(/public/fonts/jokerman.eot), url(/public/fonts/jokerman.otf), url(/public/fonts/jokerman.svg), url(/public/fonts/jokerman.ttf), url(/public/fonts/jokerman.woff);
@@ -11,5 +13,11 @@ body {
 }
 
 .root {
-  margin: 0 16px;
+  margin: 0 auto;
+  width: 1024px;
+
+  @media screen and (max-width: 1024px) {
+    margin: 0 $root-margin;
+    width: calc(100% - 2 * #{$root-margin});
+  }
 }

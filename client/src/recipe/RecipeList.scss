@@ -5,7 +5,7 @@ $grid-gap: 20px;
 }
 
 .recipe-list-container {
-    @include gridCols(6);
+    @include gridCols(5);
     column-gap: $grid-gap;
     cursor: pointer;
     display: grid;
