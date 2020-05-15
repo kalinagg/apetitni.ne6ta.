@@ -77,20 +77,44 @@ $shadow-color: #bbb;
         display: none;
     }
 
+    $image-container-width: 30%;
     .recipe-image-container {
-        width: 30%;
+        width: $image-container-width;
 
         $image-spacing: 5%;
         .recipe-image {
             border: 1px solid $border-color;
             box-shadow: 3px 5px 4px $shadow-color;
-            width: calc(100% - 3.6 * #{$image-spacing});
+            width: calc(100% - 2 * #{$image-spacing});
             padding: $image-spacing;
+
+            &.transparent {
+                opacity: 40%;;
+            }
+        }
+
+        .recipe-image-label {
+            display: block;
+            position: relative;
+        }
+
+        $progress-size: 30px;
+        .recipe-image-progress {
+            position: absolute;
+            left: calc(50% - #{$progress-size} / 2);
+            top: calc(50% - #{$progress-size} / 2);
+            display: none;
+
+            &.visible {
+                display: block;
+            }
         }
     }
 
+    $recipe-input-container-padding: 16px;
     .recipe-input-container {
-        width: 70%;
+        width: calc(100% - #{$image-container-width} - #{$recipe-input-container-padding});
+        padding-left: $recipe-input-container-padding;
 
         .recipe-input {        
             .title {

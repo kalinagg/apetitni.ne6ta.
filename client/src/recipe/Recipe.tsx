@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import ShareIcon from '@material-ui/icons/Share';
@@ -15,6 +16,7 @@ import UndoIcon from '@material-ui/icons/Undo';
 
 export interface IRecipe {
     error?: { message: string };
+    isUploaded?: boolean;
     id: number;
     ingredients: string[];
     title: string;
@@ -32,7 +34,9 @@ export interface IRecipeProps {
 class Recipe extends Component<IRecipeProps, IRecipe> {
     constructor(props: IRecipeProps) {
         super(props);
-        this.state = props.recipe;
+        this.state = Object.assign({}, props.recipe, { isUploaded: true });
+
+        console.log('isUploaded', this.state.isUploaded);
 
         this.handleChangeTitle = this.handleChangeTitle.bind(this);
         this.handleChangeIngredients = this.handleChangeIngredients.bind(this);
@@ -65,16 +69,19 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         
         formData.append('image', event.target.files[0]);
 
-        try {
+        try {        
+            this.setState({ isUploaded: false });
+
             const response = await fetch('/upload', {
                 method: 'POST',
                 body: formData
             });
-    
+
             const imagePathArr = await response.json();
     
             this.setState({
-                img: imagePathArr[0]            
+                img: imagePathArr[0],
+                isUploaded: true          
             });
         } catch(error) {
             this.setState({ error });
@@ -110,8 +117,18 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                 <CardContent className={clsx(classes.cardContent)}>
                     <div className="recipe-container">
                         <div className="recipe-image-container">
-                            <label htmlFor={"image-upload-" + recipe.id}>
-                                <img className="recipe-image" src={recipe.img} alt={recipe.title} />
+                            <label className="recipe-image-label" htmlFor={"image-upload-" + recipe.id}>
+                                <CircularProgress                        
+                                    size="30px"
+                                    className={
+                                        clsx(
+                                            classes.colorPrimary, 
+                                            "recipe-image-progress",
+                                            !recipe.isUploaded && "visible")
+                                    } />
+                                <img
+                                    className={clsx("recipe-image",  !recipe.isUploaded && "transparent")}
+                                    src={recipe.img} alt={recipe.title} />
                             </label>
                             <input
                                 disabled
@@ -208,5 +225,8 @@ export default withStyles(theme => ({
     cardActions: {
         justifyContent: 'right',
         padding: 0,
-    },    
+    },
+    colorPrimary: {
+        color: '#333',
+    },
   }))(Recipe);
