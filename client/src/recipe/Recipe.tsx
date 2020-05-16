@@ -223,7 +223,7 @@ export default withStyles(theme => ({
         },
     },
     cardActions: {
-        justifyContent: 'right',
+        justifyContent: 'flex-end',
         padding: 0,
     },
     colorPrimary: {
