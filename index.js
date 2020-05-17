@@ -39,6 +39,7 @@ app.post('/upload', async (req, res) => {
             fit: sharp.fit.cover,
             position: sharp.strategy.entropy
         })
+        .withMetadata()
         .toFormat('jpeg')
         .jpeg({
             quality: 60,
