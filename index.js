@@ -4,7 +4,6 @@ const fs = require('fs');
 const fileUpload = require('express-fileupload');
 const path = require('path');
 const uuidv4 = require('uuid/v4');
-const sharp = require('sharp');
 const app = express();
 
 app.use(bodyParser.json());
@@ -24,34 +23,22 @@ app.post('/recipes', (req, res) => {
     res.status(200).send();
 });
 
-app.post('/upload', async (req, res) => {
+app.post('/upload', (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
 
-    const imageBuffer = req.files.image.data;
-    const imagePath = 'img-food/' + 'img-' + uuidv4() + '.jpg';
+    const image = req.files.image;
+    const ext = path.extname(image.name);
+    const imagePath = 'img-food/' + 'img-' + uuidv4() + ext;
 
-    await sharp(imageBuffer)
-        .resize({
-            width: 400,
-            height: 400,
-            fit: sharp.fit.cover,
-            position: sharp.strategy.entropy
-        })
-        .withMetadata()
-        .toFormat('jpeg')
-        .jpeg({
-            quality: 60,
-            force: true
-        })
-        .toFile(imagePath, err => {
-            if (err) {
-                return res.status(500).send(err);
-            }
+    image.mv(imagePath, err => {
+        if (err) {
+            return res.status(500).send(err);
+        }
 
-            res.send([imagePath]);
-        });
+        res.send([imagePath]);
+    });
 });
 
 // Serve the image files from root
