@@ -29,8 +29,7 @@ app.post('/upload', (req, res) => {
     }
 
     const image = req.files.image;
-    const ext = path.extname(image.name);
-    const imagePath = 'img-food/' + 'img-' + uuidv4() + ext;
+    const imagePath = 'img-food/' + 'img-' + uuidv4() + '.jpg';
 
     image.mv(imagePath, err => {
         if (err) {

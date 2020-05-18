@@ -13,6 +13,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import UndoIcon from '@material-ui/icons/Undo';
+import imageCompression from 'browser-image-compression';
 
 export interface IRecipe {
     error?: { message: string };
@@ -66,11 +67,20 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
 
     async uploadImage(event): Promise<void> {
         const formData = new FormData();
-        
-        formData.append('image', event.target.files[0]);
+        const image = event.target.files[0];
+        const options = {
+            maxSizeMB: .2,
+            maxWidthOrHeight: 450,
+            useWebWorker: true,
+            fileType: 'image/jpeg'
+        };
 
         try {        
             this.setState({ isUploaded: false });
+
+            const compressedImage = await imageCompression(image, options);
+
+            formData.append('image', compressedImage);
 
             const response = await fetch('/upload', {
                 method: 'POST',
