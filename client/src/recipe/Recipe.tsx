@@ -152,7 +152,8 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                     fontSize="large"
                                     className={
                                         clsx(
-                                            recipe.isEditMode && !recipe.isUploading && "visible")} />
+                                            "recipe-phoro-camera-icon",
+                                            recipe.isEditMode && !recipe.isUploading && "visible")}/>
                                 <img
                                     className={
                                         clsx(
