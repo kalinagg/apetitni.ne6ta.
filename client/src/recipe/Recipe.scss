@@ -106,33 +106,19 @@ $shadow-color: #bbb;
             position: relative;
         }
 
-        $image-edit-size: 30px;
+        $image-icon-size: 30px;
 
         .recipe-progress-icon,
         .recipe-phoro-camera-icon {
             @extend %cursor-pointer;
             position: absolute;
-            left: calc(50% - #{$image-edit-size} / 2);
-            top: calc(50% - #{$image-edit-size} / 2);
+            left: calc(50% - #{$image-icon-size} / 2);
+            top: calc(50% - #{$image-icon-size} / 2);
             display: none;
 
             &.visible {
                 display: block;
             }
-        }
-
-        $image-edit-padding: 12px;
-        $mui-box-shadow:
-                0px 3px 5px -1px rgba(0,0,0,0.2),
-                0px 6px 10px 0px rgba(0,0,0,0.14),
-                0px 1px 18px 0px rgba(0,0,0,0.12);
-
-        .recipe-phoro-camera-icon {
-            background: #fff;
-            box-shadow: $mui-box-shadow;
-            border-radius: calc(#{$image-edit-size} / 2 + #{$image-edit-padding});
-            padding: $image-edit-padding;
-            color: $text-color;
         }
     }
 

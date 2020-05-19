@@ -149,15 +149,15 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                             "recipe-progress-icon",
                                             recipe.isUploading && "visible")} />
                                 <PhotoCameraIcon
+                                    fontSize="large"
                                     className={
                                         clsx(
-                                            "recipe-phoro-camera-icon",
-                                            recipe.isEditMode && !recipe.isUploading && "visible")}/>
+                                            recipe.isEditMode && !recipe.isUploading && "visible")} />
                                 <img
                                     className={
                                         clsx(
                                             "recipe-image",
-                                            recipe.isUploading && "transparent")}
+                                            recipe.isEditMode && "transparent")}
                                     src={recipe.img} alt={recipe.title} />
                             </label>
                             <input
