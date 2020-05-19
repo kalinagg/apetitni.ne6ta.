@@ -157,7 +157,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
             instructions: '',
             img: 'img-food/default.jpg',
             ingredients: []
-        }
+        };
 
         this.setState({
             recipes: [

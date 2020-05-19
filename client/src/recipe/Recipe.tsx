@@ -11,13 +11,15 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import ShareIcon from '@material-ui/icons/Share';
 import DeleteIcon from '@material-ui/icons/Delete';
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import UndoIcon from '@material-ui/icons/Undo';
 import imageCompression from 'browser-image-compression';
 
 export interface IRecipe {
     error?: { message: string };
-    isUploaded?: boolean;
+    isUploading?: boolean;
+    isEditMode?: boolean;
     id: number;
     ingredients: string[];
     title: string;
@@ -35,9 +37,13 @@ export interface IRecipeProps {
 class Recipe extends Component<IRecipeProps, IRecipe> {
     constructor(props: IRecipeProps) {
         super(props);
-        this.state = Object.assign({}, props.recipe, { isUploaded: true });
-
-        console.log('isUploaded', this.state.isUploaded);
+        this.state = Object.assign(
+            {},
+            props.recipe,
+            {
+                isUploading: false,
+                isEditMode: false
+            });
 
         this.handleChangeTitle = this.handleChangeTitle.bind(this);
         this.handleChangeIngredients = this.handleChangeIngredients.bind(this);
@@ -76,7 +82,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         };
 
         try {        
-            this.setState({ isUploaded: false });
+            this.setState({ isUploading: true });
 
             const compressedImage = await imageCompression(image, options);
 
@@ -91,31 +97,35 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
     
             this.setState({
                 img: imagePathArr[0],
-                isUploaded: true          
+                isUploading: false
             });
         } catch(error) {
             this.setState({ error });
         }
     }
 
-    handleEdit(event: any) {
-        this.toggleEditMode(event);
+    handleEdit(): void {
+        this.doEditMode();
         this.recipeBeforeChange = this.state;
     }
 
     recipeBeforeChange: any = {};
 
-    handleUndo(event:any) {
-        this.toggleEditMode(event);
+    handleUndo(): void {
+        this.doReadMode();
         this.setState(this.recipeBeforeChange);
     }
 
-    toggleEditMode(event: any): void {
-        const currentRecipe = event.currentTarget.closest('.recipe');        
+    doEditMode(): void {
+        this.setState({
+            isEditMode: true
+        });
+    }
 
-        currentRecipe.classList.toggle('activate-edit-mode');
-        currentRecipe.querySelectorAll('input, textarea')
-            .forEach(input => input.toggleAttribute('disabled'));
+    doReadMode(): void {
+        this.setState({
+            isEditMode: false
+        })
     }
 
     render() {
@@ -123,25 +133,35 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         const classes = this.props.classes;
 
         return (
-            <Card className={clsx(classes.card, "recipe")} key={recipe.id}>                    
+            <Card className={clsx(classes.card, "recipe", recipe.isEditMode && "edit-mode")} key={recipe.id}>
                 <CardContent className={clsx(classes.cardContent)}>
                     <div className="recipe-container">
                         <div className="recipe-image-container">
-                            <label className="recipe-image-label" htmlFor={"image-upload-" + recipe.id}>
+                            <label
+                                className="recipe-image-label"
+                                htmlFor={"image-upload-" + recipe.id}
+                                aria-label="Upload image">
                                 <CircularProgress                        
                                     size="30px"
                                     className={
                                         clsx(
                                             classes.colorPrimary, 
-                                            "recipe-image-progress",
-                                            !recipe.isUploaded && "visible")
-                                    } />
+                                            "recipe-progress-icon",
+                                            recipe.isUploading && "visible")} />
+                                <PhotoCameraIcon
+                                    className={
+                                        clsx(
+                                            "recipe-phoro-camera-icon",
+                                            recipe.isEditMode && !recipe.isUploading && "visible")}/>
                                 <img
-                                    className={clsx("recipe-image",  !recipe.isUploaded && "transparent")}
+                                    className={
+                                        clsx(
+                                            "recipe-image",
+                                            recipe.isUploading && "transparent")}
                                     src={recipe.img} alt={recipe.title} />
                             </label>
                             <input
-                                disabled
+                                disabled={!recipe.isEditMode}
                                 type="file"
                                 name="image"
                                 id={"image-upload-" + recipe.id}
@@ -151,11 +171,11 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                         <div className="recipe-input-container">
                             <CardActions className={clsx(classes.cardActions)} disableSpacing>
                                 <IconButton className="edit-icon" aria-label="Edit"
-                                    onClick={ e => this.handleEdit(e) }>
+                                    onClick={ this.handleEdit }>
                                     <EditIcon />
                                 </IconButton>
                                 <IconButton className="undo-icon" aria-label="Undo"
-                                    onClick={ e => this.handleUndo(e) }>
+                                    onClick={ this.handleUndo }>
                                     <UndoIcon />
                                 </IconButton>
                                 <IconButton className="save-icon" aria-label="Save"
@@ -172,7 +192,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                             </CardActions>
                             <div className="recipe-input">
                                 <TextField
-                                    disabled
+                                    disabled={!recipe.isEditMode}
                                     margin="dense"
                                     fullWidth
                                     size="small"
@@ -187,7 +207,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                             <hr className="devider" />
                             <div className="recipe-input">
                                 <TextField
-                                    disabled
+                                    disabled={!recipe.isEditMode}
                                     margin="dense"
                                     multiline
                                     fullWidth
@@ -203,7 +223,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                     </div>                        
                     <div className="recipe-input">
                         <TextField
-                            disabled
+                            disabled={!recipe.isEditMode}
                             margin="dense"
                             multiline
                             fullWidth

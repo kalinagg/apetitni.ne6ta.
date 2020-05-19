@@ -2,25 +2,25 @@ $text-color:   #666;
 $border-color: #ccc;
 $shadow-color: #bbb;
 
+%cursor-pointer {
+    cursor: pointer;
+}
+
 %regular-font {
     font-family: 'Source Sans Pro', sans-serif;
     color: $text-color;
     line-height: 1.5em;
 }
 
-%activate-edit-mode {
-    .MuiOutlinedInput-root {
-        &.Mui-disabled {
-            .MuiOutlinedInput-notchedOutline {
-                border-color: $border-color;
-            }
-        }
-    }
-
+%edit-mode {
     .recipe-input {       
         label {
             visibility: visible;
         }
+    }
+
+    .recipe-image {
+        @extend %cursor-pointer;
     }
 
     .devider {
@@ -43,8 +43,8 @@ $shadow-color: #bbb;
 }
 
 .recipe {
-    &.activate-edit-mode {
-        @extend %activate-edit-mode;
+    &.edit-mode {
+        @extend %edit-mode;
     }
     
     .devider {
@@ -57,6 +57,14 @@ $shadow-color: #bbb;
         &.Mui-disabled {
             .MuiOutlinedInput-notchedOutline {
                 border-color: transparent;
+            }
+        }
+    }
+
+    .MuiOutlinedInput-root {
+        &.Mui-focused {
+            .MuiOutlinedInput-notchedOutline {
+                border-width: 1px;
             }
         }
     }
@@ -98,16 +106,33 @@ $shadow-color: #bbb;
             position: relative;
         }
 
-        $progress-size: 30px;
-        .recipe-image-progress {
+        $image-edit-size: 30px;
+
+        .recipe-progress-icon,
+        .recipe-phoro-camera-icon {
+            @extend %cursor-pointer;
             position: absolute;
-            left: calc(50% - #{$progress-size} / 2);
-            top: calc(50% - #{$progress-size} / 2);
+            left: calc(50% - #{$image-edit-size} / 2);
+            top: calc(50% - #{$image-edit-size} / 2);
             display: none;
 
             &.visible {
                 display: block;
             }
+        }
+
+        $image-edit-padding: 12px;
+        $mui-box-shadow:
+                0px 3px 5px -1px rgba(0,0,0,0.2),
+                0px 6px 10px 0px rgba(0,0,0,0.14),
+                0px 1px 18px 0px rgba(0,0,0,0.12);
+
+        .recipe-phoro-camera-icon {
+            background: #fff;
+            box-shadow: $mui-box-shadow;
+            border-radius: calc(#{$image-edit-size} / 2 + #{$image-edit-padding});
+            padding: $image-edit-padding;
+            color: $text-color;
         }
     }
 
