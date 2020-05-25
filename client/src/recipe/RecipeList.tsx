@@ -148,6 +148,8 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.saveRecipes(newRecipes, 'Recipe is removed!', true);
     }
 
+    selectedRecipe: any = {};
+
     handleAddRecipe(): void {
         const recipes = this.state.recipes;
 
@@ -164,12 +166,12 @@ export default class RecipeList extends Component<any, IRecipeList> {
                 newRecipe,
                 ...recipes]
         });
+
+        this.showRecipeDetail(newRecipe);
     }
 
-    selectedRecipe: any = {};
-
     showRecipeDetail(recipe: IRecipe): void {
-        this.setListView();
+        this.setDetailView();
         this.selectedRecipe = recipe;
     }
 
@@ -179,7 +181,13 @@ export default class RecipeList extends Component<any, IRecipeList> {
 
     setListView(): void {
         this.setState({
-            listView: !this.state.listView
+            listView: true
+        });
+    }
+
+    setDetailView(): void {
+        this.setState({
+            listView: false
         });
     }
 

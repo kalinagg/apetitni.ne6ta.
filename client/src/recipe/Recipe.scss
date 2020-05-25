@@ -2,6 +2,11 @@ $text-color:   #666;
 $border-color: #ccc;
 $shadow-color: #bbb;
 
+@mixin center-icon($icon-half-size) {
+    left: calc(50% - #{$icon-half-size});
+    top: calc(50% - #{$icon-half-size});
+}
+
 %cursor-pointer {
     cursor: pointer;
 }
@@ -86,8 +91,11 @@ $shadow-color: #bbb;
     }
 
     $image-container-width: 30%;
+    $photo-camera-size: 24px;
+
     .recipe-image-container {
         width: $image-container-width;
+        font-size: $photo-camera-size;
 
         $image-spacing: 5%;
         .recipe-image {
@@ -106,19 +114,33 @@ $shadow-color: #bbb;
             position: relative;
         }
 
-        $image-icon-size: 30px;
-
         .recipe-progress-icon,
         .recipe-phoro-camera-icon {
             @extend %cursor-pointer;
-            position: absolute;
-            left: calc(50% - #{$image-icon-size} / 2);
-            top: calc(50% - #{$image-icon-size} / 2);
+            position: absolute;        
             display: none;
 
             &.visible {
                 display: block;
             }
+        }
+
+        $progress-half-size: calc(30px / 2);
+
+        .recipe-progress-icon {
+            @include center-icon($progress-half-size);
+        }
+
+        $phoro-camera-padding: 10px;
+        $photo-camera-half-size: calc((#{$photo-camera-size} + #{$phoro-camera-padding} * 2) / 2);
+
+        .recipe-phoro-camera-icon {
+            @include center-icon($photo-camera-half-size);
+            background: #fff;
+            opacity: .65;
+            padding: $phoro-camera-padding;
+            border-radius: $photo-camera-half-size;
+            box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12);
         }
     }
 
