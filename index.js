@@ -8,7 +8,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(fileUpload({
-    limits: { fileSize: 50 * 1024 * 1024 }
+    limits: {fileSize: 50 * 1024 * 1024}
 }));
 
 app.get('/recipes', (req, res) => {

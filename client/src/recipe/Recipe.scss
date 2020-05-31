@@ -1,5 +1,6 @@
 $text-color:   #666;
 $border-color: #ccc;
+$border-color-light: #eee;
 $shadow-color: #bbb;
 
 @mixin center-icon($icon-half-size) {
@@ -18,7 +19,7 @@ $shadow-color: #bbb;
 }
 
 %edit-mode {
-    .recipe-input {       
+    .recipe-input {      
         label {
             visibility: visible;
         }
@@ -43,7 +44,7 @@ $shadow-color: #bbb;
     }
 }
 
-.hidden {
+.displayNone {
     display: none;
 }
 
@@ -99,7 +100,7 @@ $shadow-color: #bbb;
 
         $image-spacing: 5%;
         .recipe-image {
-            border: 1px solid $border-color;
+            border: 1px solid $border-color-light;
             box-shadow: 3px 5px 4px $shadow-color;
             width: calc(100% - 2 * #{$image-spacing});
             padding: $image-spacing;
@@ -149,10 +150,11 @@ $shadow-color: #bbb;
         width: calc(100% - #{$image-container-width} - #{$recipe-input-container-padding});
         padding-left: $recipe-input-container-padding;
 
-        .recipe-input {        
-            .title {
-                font-weight: bold;                
-            }            
+        .recipe-input {       
+            .title input {
+                font-weight: bold;
+                text-transform: uppercase;               
+           }
 
             input,
             textarea {

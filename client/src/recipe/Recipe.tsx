@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import './Recipe.scss';
-import { withStyles } from '@material-ui/core/styles';
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
+import {withStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
@@ -15,9 +15,10 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import UndoIcon from '@material-ui/icons/Undo';
 import imageCompression from 'browser-image-compression';
+import './Recipe.scss';
 
 export interface IRecipe {
-    error?: { message: string };
+    error?: {message: string};
     isUploading?: boolean;
     isEditMode?: boolean;
     id: number;
@@ -65,7 +66,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         });
     }
 
-    handleChangeInstructions(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {        
+    handleChangeInstructions(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {       
         this.setState({
             instructions: event.target.value           
         });
@@ -81,8 +82,8 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
             fileType: 'image/jpeg'
         };
 
-        try {        
-            this.setState({ isUploading: true });
+        try {       
+            this.setState({isUploading: true});
 
             const compressedImage = await imageCompression(image, options);
 
@@ -99,8 +100,8 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                 img: imagePathArr[0],
                 isUploading: false
             });
-        } catch(error) {
-            this.setState({ error });
+       } catch(error) {
+            this.setState({error});
         }
     }
 
@@ -159,24 +160,24 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                         clsx(
                                             "recipe-image",
                                             recipe.isUploading && "transparent")}
-                                    src={recipe.img} alt={recipe.title} />
+                                    src={`/${recipe.img}`} alt={recipe.title} />
                             </label>
                             <input
                                 disabled={!recipe.isEditMode}
                                 type="file"
                                 name="image"
                                 id={"image-upload-" + recipe.id}
-                                className="hidden"
+                                className="displayNone"
                                 onChange={e => this.uploadImage(e)} />
                         </div>
                         <div className="recipe-input-container">
                             <CardActions className={clsx(classes.cardActions)} disableSpacing>
                                 <IconButton className="edit-icon" aria-label="Edit"
-                                    onClick={ this.handleEdit }>
+                                    onClick={this.handleEdit}>
                                     <EditIcon />
                                 </IconButton>
                                 <IconButton className="undo-icon" aria-label="Undo"
-                                    onClick={ this.handleUndo }>
+                                    onClick={this.handleUndo}>
                                     <UndoIcon />
                                 </IconButton>
                                 <IconButton className="save-icon" aria-label="Save"
@@ -186,10 +187,12 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                 <IconButton className="share-icon" aria-label="Share">
                                     <ShareIcon />
                                 </IconButton>
-                                <IconButton className="delete-icon" aria-label="Delete"
-                                    onClick={e => this.props.handleDelete(recipe.id, e)}>
-                                    <DeleteIcon />
-                                </IconButton>                        
+                                <Link to='/'>
+                                    <IconButton className="delete-icon" aria-label="Delete"
+                                        onClick={e => this.props.handleDelete(recipe.id, e)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Link>
                             </CardActions>
                             <div className="recipe-input">
                                 <TextField
@@ -248,7 +251,7 @@ export default withStyles(theme => ({
         borderRadius: 0,
         border: '1px solid #eee'
     },
-    cardContent: {    
+    cardContent: {   
         '&:last-child': {
             paddingBottom: '16px',
         },

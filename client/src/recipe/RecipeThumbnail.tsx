@@ -1,33 +1,33 @@
-import React, { Component } from 'react';
-import { IRecipe } from './Recipe';
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
+import {IRecipe} from './Recipe';
 import './RecipeThumbnail.scss';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 
 interface IRecipeThumbnailProps {
     recipe: IRecipe;
     classes: any;
-    showRecipeDetail(recipe: IRecipe): void;
 }
 
 class RecipeThumbnail extends Component<IRecipeThumbnailProps, any> {
     render() {
-        const recipe = this.props.recipe;
-        const classes = this.props.classes;
+        const {recipe, classes} = this.props;
 
         return (
-            <Card                
-                className={clsx(classes.card, "recipe-thumbnail")}                
-                onClick={() => this.props.showRecipeDetail(recipe)}>                        
-                <CardContent className={clsx(classes.cardContent)}>
-                    <div className="recipe-image-container">
-                        <img className="recipe-image" src={recipe.img} alt={recipe.title} />      
-                    </div>
-                    <h2>{recipe.title}</h2>
-                </CardContent>
-            </Card>
+            <Link to={`/recipe/${recipe.id}`}>
+                <Card
+                    className={clsx(classes.card, "recipe-thumbnail")}>                        
+                    <CardContent className={clsx(classes.cardContent)}>
+                        <div className="recipe-image-container">
+                            <img className="recipe-image" src={recipe.img} alt={recipe.title} />      
+                        </div>
+                        <h2>{recipe.title}</h2>
+                    </CardContent>
+                </Card>
+            </Link>
         );
     }
 }

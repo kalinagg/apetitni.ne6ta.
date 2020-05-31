@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import Recipe, { IRecipe } from './Recipe';
+import React, {Component} from 'react';
+import {Route, matchPath} from 'react-router-dom';
 import Header from '../header/Header';
+import Recipe, {IRecipe} from './Recipe';
 import RecipeThumbnail from './RecipeThumbnail';
-import './RecipeList.scss';
 import SnackbarMessage from '../snackbar/SnackbarMessage';
+import './RecipeList.scss';
 
 enum SnackbarSeverity {
     Success = 'success',
@@ -15,10 +16,9 @@ enum SnackbarSeverity {
 export type Severity = 'success' | 'info' | 'warning' | 'error';
 
 export interface IRecipeList {
-    error?: { message: string };
+    error?: {message: string};
     isLoaded: boolean;
     recipes: IRecipe[];
-    listView: boolean;
     snackbarOpen: boolean;
     snackbarSeverity: Severity;
     snackbarMessage: string;
@@ -32,18 +32,15 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.state = {
             isLoaded: false,
             recipes: [],
-            listView: true,
             snackbarOpen: false, 
             snackbarSeverity: SnackbarSeverity.Error,
             snackbarMessage: '',
             snackbarUndo: false
         };
 
-        this.handleSubmit = this.handleSubmit.bind(this);        
+        this.handleSubmit = this.handleSubmit.bind(this);      
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAddRecipe = this.handleAddRecipe.bind(this);        
-        this.showRecipeDetail = this.showRecipeDetail.bind(this);
-        this.showRecipeList = this.showRecipeList.bind(this);
         this.closeSnackbar = this.closeSnackbar.bind(this);
     }
 
@@ -59,8 +56,8 @@ export default class RecipeList extends Component<any, IRecipeList> {
             this.setState({
                 isLoaded: true,
                 recipes
-            });        
-        } catch(error) {        
+            }); 
+       } catch(error) {
             this.setState({
                 isLoaded: true,
                 error
@@ -81,13 +78,13 @@ export default class RecipeList extends Component<any, IRecipeList> {
         newRecipes.splice(recipeIndex, 1, newRecipe);
 
         return newRecipes;
-    }    
+   }
 
     async saveRecipes(recipes: IRecipe[], snackbarMessage: string, snackbarUndo: boolean): Promise<void> {
         try {
             const response = await fetch('/recipes', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(recipes)
             });
 
@@ -96,7 +93,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
             }
 
             this.openSnackbar(SnackbarSeverity.Success, snackbarMessage, snackbarUndo);
-        } catch(error) {
+       } catch(error) {
             this.openSnackbar(SnackbarSeverity.Error, error.message, false);
         }
     }
@@ -110,7 +107,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         });
     }
 
-    closeSnackbar() {    
+    closeSnackbar() {   
         this.setState({
             snackbarOpen: false
         }); 
@@ -126,15 +123,14 @@ export default class RecipeList extends Component<any, IRecipeList> {
             recipes: newRecipes
         });
 
-        // this.toggleEditMode(event);
-        await this.saveRecipes(newRecipes, 'Recipe is saved!', false);
+        await this.saveRecipes(newRecipes, 'Recipe saved!', false);
     }
 
     deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
         return recipes.filter(r => r.id !== recipeId);
     }
 
-    handleDelete(recipeId: number, event: any): void {
+    async handleDelete(recipeId: number, event: any): Promise<void> {
         const newRecipes = this.deleteRecipeById(
             recipeId,
             this.state.recipes
@@ -144,15 +140,11 @@ export default class RecipeList extends Component<any, IRecipeList> {
             recipes: newRecipes
         });
 
-        this.showRecipeList();
-        this.saveRecipes(newRecipes, 'Recipe is removed!', true);
+        await this.saveRecipes(newRecipes, 'Recipe removed!', true);
     }
 
-    selectedRecipe: any = {};
-
     handleAddRecipe(): void {
-        const recipes = this.state.recipes;
-
+        const {recipes} = this.state;
         const newRecipe = {
             id: recipes.length ? Math.max(...recipes.map(r => r.id)) + 1 : 1,
             title: '',
@@ -166,72 +158,54 @@ export default class RecipeList extends Component<any, IRecipeList> {
                 newRecipe,
                 ...recipes]
         });
-
-        this.showRecipeDetail(newRecipe);
     }
 
-    showRecipeDetail(recipe: IRecipe): void {
-        this.setDetailView();
-        this.selectedRecipe = recipe;
+    matchId;
+
+    getUrlParams(pathname: String): Number {
+        this.matchId = matchPath(pathname, {path: `/recipe/:id`});
+
+        return this.matchId && + this.matchId.params.id;
     }
 
-    showRecipeList(): void {
-        this.setListView();
-    }
-
-    setListView(): void {
-        this.setState({
-            listView: true
-        });
-    }
-
-    setDetailView(): void {
-        this.setState({
-            listView: false
-        });
+    getRecipeById(): IRecipe {
+        return this.state.recipes.filter(
+            r => r.id === this.getUrlParams(this.props.location.pathname))[0]; 
     }
 
     render() {
-        const { error, isLoaded } = this.state;
-
+        const {error, isLoaded} = this.state;
+        let recipe: IRecipe;
+        
         if (error) {
             return <div>Error: {error.message}</div>;
         }
-
+        
         if (!isLoaded) {
             return <div>Loading ...</div>
         }
-
-        let currentView;
-
-        if(this.state.listView) {
-            currentView = (
-                <div className="recipe-list-container">
-                    {this.state.recipes.map(r => (
-                        <RecipeThumbnail
-                            key={r.id}
-                            recipe={r}
-                            showRecipeDetail={this.showRecipeDetail} />
-                    ))}
-                </div>              
-            );
-        } else {
-            currentView = (                
-                <Recipe
-                    recipe={this.selectedRecipe}
-                    key={this.selectedRecipe.id} 
-                    handleSubmit={this.handleSubmit}
-                    handleDelete={this.handleDelete} />
-            );
-        }
+        
+        recipe = this.getRecipeById();
 
         return (
             <React.Fragment>
-                <Header
-                    listView={this.state.listView}
-                    showRecipeList={this.showRecipeList}
+                <Header                    
+                    matchId={this.matchId}
+                    recipe={recipe}
                     handleAddRecipe={this.handleAddRecipe} />
-                {currentView}
+                <Route exact path="/">
+                    <div className="recipe-list-container">
+                        {this.state.recipes.map(r => (
+                            <RecipeThumbnail key={r.id} recipe={r} />
+                            ))}
+                    </div>
+                </Route>                                       
+                <Route path="/recipe/:id">
+                    <Recipe                        
+                        recipe={recipe}
+                        handleSubmit={this.handleSubmit}
+                        handleDelete={this.handleDelete} />
+                </Route>
                 <SnackbarMessage
                     open={this.state.snackbarOpen}
                     severity={this.state.snackbarSeverity}
