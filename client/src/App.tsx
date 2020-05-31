@@ -6,10 +6,12 @@ import RecipeList from './recipe/RecipeList';
 export default class App extends Component<any, any> {
     render() {
         return (
-            <Switch>               
-                <RecipeList />
+            <React.Fragment>
+                <Switch>
+                    <RecipeList />
+                </Switch>              
                 <Footer />
-            </Switch>
+            </React.Fragment>
         )
     }
 }

@@ -56,7 +56,7 @@ $shadow-color: #bbb;
     .devider {
         border: 0;
         border-top: 1px dashed $border-color;
-        margin: 6px 10.5px 0;
+        margin: 0 10px 0;
     }
 
     .MuiOutlinedInput-root {
@@ -80,6 +80,8 @@ $shadow-color: #bbb;
     }
 
     .recipe-input {
+        margin-bottom: 8px;
+
         label {
             visibility: hidden;
         }
@@ -145,7 +147,7 @@ $shadow-color: #bbb;
         }
     }
 
-    $recipe-input-container-padding: 16px;
+    $recipe-input-container-padding: 20px;
     .recipe-input-container {
         width: calc(100% - #{$image-container-width} - #{$recipe-input-container-padding});
         padding-left: $recipe-input-container-padding;
@@ -176,6 +178,27 @@ $shadow-color: #bbb;
     .instructions {
         .MuiInputBase-root {
             @extend %regular-font;
+        }
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .recipe {
+        .recipe-container {
+            flex-flow: column;
+
+            .recipe-image-container,
+            .recipe-input-container {
+                width: 100%;
+            }
+
+            .recipe-input-container {
+                padding-left: 0;
+            }
+
+            .recipe-image-container {
+                order: 1;
+            }
         }
     }
 }

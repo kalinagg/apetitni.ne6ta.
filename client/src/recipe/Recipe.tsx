@@ -223,22 +223,23 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                     value={recipe.ingredients.join('\r\n')}
                                     onChange={e => this.handleChangeIngredients(e)} />     
                             </div>
+                            <hr className="devider" />
+                            <div className="recipe-input">
+                                <TextField
+                                    disabled={!recipe.isEditMode}
+                                    margin="dense"
+                                    multiline
+                                    fullWidth
+                                    className="input-field instructions"
+                                    id={'instructions-' + recipe.id}
+                                    name={'instructions-' + recipe.id}
+                                    label="Instructions"
+                                    variant="outlined"
+                                    value={recipe.instructions}
+                                    onChange={e => this.handleChangeInstructions(e)} />
+                            </div>
                         </div>
-                    </div>                        
-                    <div className="recipe-input">
-                        <TextField
-                            disabled={!recipe.isEditMode}
-                            margin="dense"
-                            multiline
-                            fullWidth
-                            className="input-field instructions"
-                            id={'instructions-' + recipe.id}
-                            name={'instructions-' + recipe.id}
-                            label="Instructions"
-                            variant="outlined"
-                            value={recipe.instructions}
-                            onChange={e => this.handleChangeInstructions(e)} />
-                    </div>                   
+                    </div>                                       
                 </CardContent>                                        
             </Card>
         );
@@ -253,7 +254,7 @@ export default withStyles(theme => ({
     },
     cardContent: {   
         '&:last-child': {
-            paddingBottom: '16px',
+            paddingBottom: '8px',
         },
     },
     cardActions: {
