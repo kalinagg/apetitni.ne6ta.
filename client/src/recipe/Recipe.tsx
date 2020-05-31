@@ -194,7 +194,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                     </IconButton>
                                 </Link>
                             </CardActions>
-                            <div className="recipe-input">
+                            <div className="recipe-input recipe-input-first">
                                 <TextField
                                     disabled={!recipe.isEditMode}
                                     margin="dense"
@@ -223,7 +223,6 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                     value={recipe.ingredients.join('\r\n')}
                                     onChange={e => this.handleChangeIngredients(e)} />     
                             </div>
-                            <hr className="devider" />
                             <div className="recipe-input">
                                 <TextField
                                     disabled={!recipe.isEditMode}

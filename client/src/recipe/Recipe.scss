@@ -184,8 +184,13 @@ $shadow-color: #bbb;
 
 @media screen and (max-width: 576px) {
     .recipe {
+        .recipe-input-first {
+            margin-top: 88px;
+        }
+
         .recipe-container {
             flex-flow: column;
+            position: relative;
 
             .recipe-image-container,
             .recipe-input-container {
@@ -197,7 +202,9 @@ $shadow-color: #bbb;
             }
 
             .recipe-image-container {
-                order: 1;
+                order: -1;
+                position: absolute;
+                width: 120px;
             }
         }
     }
