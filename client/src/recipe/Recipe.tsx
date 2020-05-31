@@ -222,23 +222,23 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                     variant="outlined"                                
                                     value={recipe.ingredients.join('\r\n')}
                                     onChange={e => this.handleChangeIngredients(e)} />     
-                            </div>
-                            <div className="recipe-input">
-                                <TextField
-                                    disabled={!recipe.isEditMode}
-                                    margin="dense"
-                                    multiline
-                                    fullWidth
-                                    className="input-field instructions"
-                                    id={'instructions-' + recipe.id}
-                                    name={'instructions-' + recipe.id}
-                                    label="Instructions"
-                                    variant="outlined"
-                                    value={recipe.instructions}
-                                    onChange={e => this.handleChangeInstructions(e)} />
-                            </div>
-                        </div>
-                    </div>                                       
+                            </div>                            
+                        </div>                        
+                    </div>
+                    <div className="recipe-input">
+                        <TextField
+                            disabled={!recipe.isEditMode}
+                            margin="dense"
+                            multiline
+                            fullWidth
+                            className="input-field instructions"
+                            id={'instructions-' + recipe.id}
+                            name={'instructions-' + recipe.id}
+                            label="Instructions"
+                            variant="outlined"
+                            value={recipe.instructions}
+                            onChange={e => this.handleChangeInstructions(e)} />
+                    </div>
                 </CardContent>                                        
             </Card>
         );
