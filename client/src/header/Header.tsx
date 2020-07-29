@@ -10,32 +10,32 @@ import './Header.scss';
 import IRecipe from '../recipe/IRecipe';
 
 interface IHeaderProps {
-    matchId: any;
+    matchPath: any;
     recipe: IRecipe;
     addRecipe(): void;
 }
 
 export default class Header extends Component<IHeaderProps> {
     render() {
-        const {matchId} = this.props;
+        const {matchPath} = this.props;
 
         return (
             <div className="header-container">        
-                <Link to='/' className={clsx(!matchId && "hidden")}>
+                <Link to='/' className={clsx(!matchPath && "hidden")}>
                     <IconButton>
                         <KeyboardBackspaceIcon style={{color: '#666'}} />
                     </IconButton>
                 </Link>
                 <Logo />
-                    <Fab
-                        className={clsx("add-icon")}
-                        size="small"
-                        color="secondary"
-                        aria-label="Add Recipe"
-                        style={{background: '#f33'}}
-                        onClick={() => this.props.addRecipe()}>
-                        <AddIcon />
-                    </Fab>
+                <Fab
+                    className={clsx("add-icon", matchPath && "hidden")}
+                    size="small"
+                    color="secondary"
+                    aria-label="Add Recipe"
+                    style={{background: '#f33'}}
+                    onClick={() => this.props.addRecipe()}>
+                    <AddIcon />
+                </Fab>
             </div>
         )
     }

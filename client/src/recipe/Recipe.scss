@@ -8,10 +8,6 @@ $shadow-color: #bbb;
     top: calc(50% - #{$icon-half-size});
 }
 
-%cursor-pointer {
-    cursor: pointer;
-}
-
 %regular-font {
     font-family: 'Source Sans Pro', sans-serif;
     color: $text-color;
@@ -26,7 +22,7 @@ $shadow-color: #bbb;
     }
 
     .recipe-image {
-        @extend %cursor-pointer;
+        cursor: pointer;
     }
 
     .devider {
@@ -99,6 +95,7 @@ $shadow-color: #bbb;
     .recipe-image-container {
         width: $image-container-width;
         font-size: $photo-camera-size;
+        margin-bottom: 10px;
 
         $image-spacing: 5%;
         .recipe-image {
@@ -119,7 +116,7 @@ $shadow-color: #bbb;
 
         .recipe-progress-icon,
         .recipe-phoro-camera-icon {
-            @extend %cursor-pointer;
+            cursor: pointer;
             position: absolute;        
             display: none;
 

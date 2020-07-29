@@ -6,6 +6,7 @@ import IRecipe from '../recipe/IRecipe';
 import RecipeThumbnail from '../recipe-thumbnail/RecipeThumbnail';
 import SnackbarMessage, {SnackbarSeverity, Severity} from '../snackbar/SnackbarMessage';
 import IRecipeList from './IRecipeList';
+import history from '../history';
 import './RecipeList.scss';
 
 export default class RecipeList extends Component<any, IRecipeList> {
@@ -140,6 +141,8 @@ export default class RecipeList extends Component<any, IRecipeList> {
                 newRecipe,
                 ...recipes]
         });
+
+        history.push(`/recipe/${newRecipe.id}`);
     }
     
     getRecipeById(): IRecipe {
@@ -147,12 +150,12 @@ export default class RecipeList extends Component<any, IRecipeList> {
             r => r.id === this.getUrlParams(this.props.location.pathname))[0]; 
         }
         
-    matchId;
+    matchPath;
 
     getUrlParams(pathname: string): number {
-        this.matchId = matchPath(pathname, {path: `/recipe/:id`});
+        this.matchPath = matchPath(pathname, {path: `/recipe/:id`});
 
-        return this.matchId && + this.matchId.params.id;
+        return this.matchPath && + this.matchPath.params.id;
     }
 
     render() {
@@ -172,7 +175,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         return (
             <React.Fragment>
                 <Header                    
-                    matchId={this.matchId}
+                    matchPath={this.matchPath}
                     recipe={recipe}
                     addRecipe={this.addRecipe} />
                 <Route exact path="/">
