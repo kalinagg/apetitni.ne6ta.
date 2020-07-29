@@ -1,20 +1,20 @@
 import React, {Component, Fragment} from 'react';
 import clsx from 'clsx';
-import {Severity} from '../recipe/RecipeList';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
 import {withStyles} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import ISnackbarProps from './ISnackbarProps';
 
-interface ISnackbarProps {
-    classes: any;
-    open: boolean;
-    severity: Severity;
-    message: string;
-    undo: boolean;
-    closeSnackbar(): void;
+export type Severity = 'success' | 'info' | 'warning' | 'error';
+
+export enum SnackbarSeverity {
+    Success = 'success',
+    Info = 'info',
+    Warning = 'warning',
+    Error = 'error',
 }
 
 class SnackbarMessage extends Component<ISnackbarProps, any> {

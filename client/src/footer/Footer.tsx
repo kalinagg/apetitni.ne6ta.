@@ -3,7 +3,7 @@ import Logo from '../logo/Logo';
 import './Footer.scss';
 
 
-export default class Footer extends Component<any, any> {
+export default class Footer extends Component<{}, {}> {
     render() {
         return (
             <footer className="footer">

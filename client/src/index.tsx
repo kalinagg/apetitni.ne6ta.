@@ -1,14 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter as Router, Switch} from 'react-router-dom';
+import Footer from './footer/Footer';
+import RecipeList from './recipe-list/RecipeList';
 import './index.scss';
-import App from './App';
-import {BrowserRouter as Router} from 'react-router-dom';
 
 ReactDOM.render(
     <React.StrictMode>
         <Router>
-            <App />
+            <Switch>
+                <RecipeList />
+            </Switch>              
+            <Footer />
         </Router>
     </React.StrictMode>,
-    document.querySelector('.root')
+    document.querySelector('.root') as HTMLElement
 );

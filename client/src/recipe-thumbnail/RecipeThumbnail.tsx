@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import {IRecipe} from './Recipe';
+import IRecipe from '../recipe/IRecipe';
 import './RecipeThumbnail.scss';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -12,7 +12,7 @@ interface IRecipeThumbnailProps {
     classes: any;
 }
 
-class RecipeThumbnail extends Component<IRecipeThumbnailProps, any> {
+class RecipeThumbnail extends Component<IRecipeThumbnailProps, {}> {
     render() {
         const {recipe, classes} = this.props;
 

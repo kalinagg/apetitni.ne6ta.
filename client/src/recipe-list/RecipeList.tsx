@@ -1,29 +1,12 @@
 import React, {Component} from 'react';
 import {Route, matchPath} from 'react-router-dom';
 import Header from '../header/Header';
-import Recipe, {IRecipe} from './Recipe';
-import RecipeThumbnail from './RecipeThumbnail';
-import SnackbarMessage from '../snackbar/SnackbarMessage';
+import Recipe from '../recipe/Recipe';
+import IRecipe from '../recipe/IRecipe';
+import RecipeThumbnail from '../recipe-thumbnail/RecipeThumbnail';
+import SnackbarMessage, {SnackbarSeverity, Severity} from '../snackbar/SnackbarMessage';
+import IRecipeList from './IRecipeList';
 import './RecipeList.scss';
-
-enum SnackbarSeverity {
-    Success = 'success',
-    Info = 'info',
-    Warning = 'warning',
-    Error = 'error',
-}
-
-export type Severity = 'success' | 'info' | 'warning' | 'error';
-
-export interface IRecipeList {
-    error?: {message: string};
-    isLoaded: boolean;
-    recipes: IRecipe[];
-    snackbarOpen: boolean;
-    snackbarSeverity: Severity;
-    snackbarMessage: string;
-    snackbarUndo: boolean;
-}
 
 export default class RecipeList extends Component<any, IRecipeList> {
     constructor(props: any) {
@@ -38,9 +21,9 @@ export default class RecipeList extends Component<any, IRecipeList> {
             snackbarUndo: false
         };
 
-        this.handleSubmit = this.handleSubmit.bind(this);      
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handleAddRecipe = this.handleAddRecipe.bind(this);        
+        this.saveRecipes = this.saveRecipes.bind(this);      
+        this.deleteRecipe = this.deleteRecipe.bind(this);
+        this.addRecipe = this.addRecipe.bind(this);        
         this.closeSnackbar = this.closeSnackbar.bind(this);
     }
 
@@ -63,24 +46,9 @@ export default class RecipeList extends Component<any, IRecipeList> {
                 error
             });
         }
-    }
+    }    
 
-    updateRecipeById(recipe: IRecipe, recipes: IRecipe[]) {
-        const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
-
-        if (recipeIndex < 0) {
-            throw new Error('Recipe not found:' + recipe.id);
-        }
-
-        const newRecipe = Object.assign({}, recipe);
-        
-        const newRecipes = [...recipes];
-        newRecipes.splice(recipeIndex, 1, newRecipe);
-
-        return newRecipes;
-   }
-
-    async saveRecipes(recipes: IRecipe[], snackbarMessage: string, snackbarUndo: boolean): Promise<void> {
+    async submitRecipes(recipes: IRecipe[], snackbarMessage: string, snackbarUndo: boolean): Promise<void> {
         try {
             const response = await fetch('/recipes', {
                 method: 'POST',
@@ -113,7 +81,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         }); 
     }
 
-    async handleSubmit(event: React.FormEvent<HTMLElement>, recipe: IRecipe): Promise<void> {
+    saveRecipes(event: React.FormEvent<HTMLElement>, recipe: IRecipe): void {
         const newRecipes = this.updateRecipeById(
             recipe,
             this.state.recipes
@@ -123,14 +91,24 @@ export default class RecipeList extends Component<any, IRecipeList> {
             recipes: newRecipes
         });
 
-        await this.saveRecipes(newRecipes, 'Recipe saved!', false);
+        this.submitRecipes(newRecipes, 'Recipe saved!', false);
     }
 
-    deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
-        return recipes.filter(r => r.id !== recipeId);
-    }
+    updateRecipeById(recipe: IRecipe, recipes: IRecipe[]) {
+        const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
 
-    async handleDelete(recipeId: number, event: any): Promise<void> {
+        if (recipeIndex < 0) {
+            throw new Error('Recipe not found:' + recipe.id);
+        }
+
+        const newRecipe = {...recipe};
+        const newRecipes = [...recipes];
+        newRecipes.splice(recipeIndex, 1, newRecipe);
+
+        return newRecipes;
+   }    
+
+    async deleteRecipe(recipeId: number, event: any): Promise<void> {
         const newRecipes = this.deleteRecipeById(
             recipeId,
             this.state.recipes
@@ -140,10 +118,14 @@ export default class RecipeList extends Component<any, IRecipeList> {
             recipes: newRecipes
         });
 
-        await this.saveRecipes(newRecipes, 'Recipe removed!', true);
+        await this.submitRecipes(newRecipes, 'Recipe removed!', true);
     }
 
-    handleAddRecipe(): void {
+    deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
+        return recipes.filter(r => r.id !== recipeId);
+    }
+
+    addRecipe(): void {
         const {recipes} = this.state;
         const newRecipe = {
             id: recipes.length ? Math.max(...recipes.map(r => r.id)) + 1 : 1,
@@ -159,18 +141,18 @@ export default class RecipeList extends Component<any, IRecipeList> {
                 ...recipes]
         });
     }
-
-    matchId;
-
-    getUrlParams(pathname: String): Number {
-        this.matchId = matchPath(pathname, {path: `/recipe/:id`});
-
-        return this.matchId && + this.matchId.params.id;
-    }
-
+    
     getRecipeById(): IRecipe {
         return this.state.recipes.filter(
             r => r.id === this.getUrlParams(this.props.location.pathname))[0]; 
+        }
+        
+    matchId;
+
+    getUrlParams(pathname: string): number {
+        this.matchId = matchPath(pathname, {path: `/recipe/:id`});
+
+        return this.matchId && + this.matchId.params.id;
     }
 
     render() {
@@ -192,19 +174,19 @@ export default class RecipeList extends Component<any, IRecipeList> {
                 <Header                    
                     matchId={this.matchId}
                     recipe={recipe}
-                    handleAddRecipe={this.handleAddRecipe} />
+                    addRecipe={this.addRecipe} />
                 <Route exact path="/">
                     <div className="recipe-list-container">
                         {this.state.recipes.map(r => (
                             <RecipeThumbnail key={r.id} recipe={r} />
-                            ))}
+                        ))}
                     </div>
                 </Route>                                       
                 <Route path="/recipe/:id">
                     <Recipe                        
                         recipe={recipe}
-                        handleSubmit={this.handleSubmit}
-                        handleDelete={this.handleDelete} />
+                        saveRecipes={this.saveRecipes}
+                        deleteRecipe={this.deleteRecipe} />
                 </Route>
                 <SnackbarMessage
                     open={this.state.snackbarOpen}

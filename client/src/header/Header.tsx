@@ -7,12 +7,12 @@ import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import './Header.scss';
-import {IRecipe} from '../recipe/Recipe';
+import IRecipe from '../recipe/IRecipe';
 
 interface IHeaderProps {
     matchId: any;
     recipe: IRecipe;
-    handleAddRecipe(): void;
+    addRecipe(): void;
 }
 
 export default class Header extends Component<IHeaderProps> {
@@ -33,7 +33,7 @@ export default class Header extends Component<IHeaderProps> {
                         color="secondary"
                         aria-label="Add Recipe"
                         style={{background: '#f33'}}
-                        onClick={() => this.props.handleAddRecipe()}>
+                        onClick={() => this.props.addRecipe()}>
                         <AddIcon />
                     </Fab>
             </div>
