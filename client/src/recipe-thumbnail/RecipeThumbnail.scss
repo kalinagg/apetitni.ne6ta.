@@ -11,12 +11,11 @@ $shadow-color: #bbb;
         line-height: 1.2em;
         text-transform: uppercase;
         margin: 12px 0 0;
-        height: 36px;
+        height: 18px;
         display: flex;
         justify-content: center;
+        overflow: hidden;
     }
-
-    $image-spacing: 4%;
 
     .recipe-image {
         width: 100%;

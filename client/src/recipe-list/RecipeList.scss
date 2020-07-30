@@ -1,4 +1,4 @@
-$grid-gap: 20px;
+$grid-gap: 10px;
 
 @mixin gridCols($cols) {
     grid-template-columns: repeat($cols, 1fr);

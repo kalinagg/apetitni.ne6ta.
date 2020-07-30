@@ -25,7 +25,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         this.state = {
             ...props.recipe,
             isUploading: false,
-            isEditMode: false
+            isEditMode: !this.isEdited()
         }    
 
         this.updateTitle = this.updateTitle.bind(this);
@@ -35,6 +35,11 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
         this.cancelEdit = this.cancelEdit.bind(this);
         this.edit = this.edit.bind(this);
         this.saveAndDoReadMode = this.saveAndDoReadMode.bind(this);
+    }
+
+    isEdited() {
+        const {title, ingredients, instructions} = this.props.recipe;
+        return title.length || ingredients.length || instructions.length;
     }
 
     updateTitle(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
@@ -89,7 +94,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
     edit(): void {
         this.doEditMode();
         this.recipeBeforeChange = this.state;
-    }
+    }    
 
     recipeBeforeChange = {};
 

@@ -119,7 +119,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
             recipes: newRecipes
         });
 
-        await this.submitRecipes(newRecipes, 'Recipe removed!', true);
+        this.submitRecipes(newRecipes, 'Recipe removed!', true);
     }
 
     deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
@@ -135,14 +135,15 @@ export default class RecipeList extends Component<any, IRecipeList> {
             img: 'img-food/default.jpg',
             ingredients: []
         };
+        const newRecipes = [newRecipe, ...recipes];
 
         this.setState({
-            recipes: [
-                newRecipe,
-                ...recipes]
+            recipes: newRecipes
         });
-
+        
         history.push(`/recipe/${newRecipe.id}`);
+
+        this.submitRecipes(newRecipes, 'Recipe added!', false);
     }
     
     getRecipeById(): IRecipe {
