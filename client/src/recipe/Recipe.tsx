@@ -50,7 +50,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
 
     updateIngredients(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
         this.setState({
-            ingredients: event.target.value.split('\r\n')      
+            ingredients: event.target.value
         });
     }
 
@@ -213,7 +213,7 @@ class Recipe extends Component<IRecipeProps, IRecipe> {
                                     name={'ingredients-' + recipe.id}
                                     label="Ingredients"
                                     variant="outlined"                                
-                                    value={recipe.ingredients.join('\r\n')}
+                                    value={recipe.ingredients}
                                     onChange={this.updateIngredients} />     
                             </div>                            
                         </div>                        

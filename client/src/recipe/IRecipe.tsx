@@ -1,6 +1,6 @@
 export default interface IRecipe {
     id: number;
-    ingredients: string[];
+    ingredients: string;
     title: string;
     img: string;
     instructions: string;

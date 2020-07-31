@@ -133,7 +133,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
             title: '',
             instructions: '',
             img: 'img-food/default.jpg',
-            ingredients: []
+            ingredients: ''
         };
         const newRecipes = [newRecipe, ...recipes];
 
