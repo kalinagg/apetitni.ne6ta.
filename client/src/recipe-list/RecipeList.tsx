@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Route, matchPath} from 'react-router-dom';
-import Header from '../header/Header';
+import HeaderWithRouter from '../header/Header';
 import Recipe from '../recipe/Recipe';
 import IRecipe from '../recipe/IRecipe';
 import RecipeThumbnail from '../recipe-thumbnail/RecipeThumbnail';
@@ -9,9 +9,12 @@ import IRecipeList from './IRecipeList';
 import history from '../history';
 import './RecipeList.scss';
 
+import RecipeManagerClient from '../RecipeManagerClient';
+const recipeManagerClient = new RecipeManagerClient();
+
 export default class RecipeList extends Component<any, IRecipeList> {
     constructor(props: any) {
-        super(props);
+        super(props);        
         
         this.state = {
             isLoaded: false,
@@ -22,146 +25,140 @@ export default class RecipeList extends Component<any, IRecipeList> {
             snackbarUndo: false
         };
 
-        this.saveRecipes = this.saveRecipes.bind(this);      
-        this.deleteRecipe = this.deleteRecipe.bind(this);
+        this.saveRecipe = this.saveRecipe.bind(this);      
+        // this.deleteRecipe = this.deleteRecipe.bind(this);
         this.addRecipe = this.addRecipe.bind(this);        
-        this.closeSnackbar = this.closeSnackbar.bind(this);
+        // this.closeSnackbar = this.closeSnackbar.bind(this);
+        this.getRecipeById = this.getRecipeById.bind(this);
     }
 
-    componentDidMount() {
-        this.getRecipes();
+    componentDidMount() { 
+        this.showRecipes();
     }
 
-    async getRecipes(): Promise<void> {
-        try {
-            const response = await fetch('/recipes');
-            const recipes = await response.json();
+    async showRecipes(): Promise<void> {
+        this.setState({
+            isLoaded: true,
+            recipes: await recipeManagerClient.getRecipes()
+        });
+    }
+
+    // openSnackbar(severity: Severity, message: string, undo: boolean) {
+    //     this.setState({
+    //         snackbarOpen: true,
+    //         snackbarSeverity: severity,
+    //         snackbarMessage: message,
+    //         snackbarUndo: undo
+    //     });
+    // }
+
+    // closeSnackbar() {   
+    //     this.setState({
+    //         snackbarOpen: false
+    //     }); 
+    // }
+
+    async saveRecipe(event: React.FormEvent<HTMLElement>, recipe: IRecipe): Promise<void> {
+        const {recipes} = this.state;
+        const isRecipeNew = recipe.id === '';
+
+        if (isRecipeNew) {
+            let newRecipe = {...recipe};
+            const newRecipes = [newRecipe, ...recipes];
 
             this.setState({
-                isLoaded: true,
-                recipes
-            }); 
-       } catch(error) {
-            this.setState({
-                isLoaded: true,
-                error
-            });
-        }
-    }    
-
-    async submitRecipes(recipes: IRecipe[], snackbarMessage: string, snackbarUndo: boolean): Promise<void> {
-        try {
-            const response = await fetch('/recipes', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(recipes)
+                recipes: newRecipes
             });
 
-            if(!response.ok) {
-                throw new Error('Something went wrong, please try again later!');
+            newRecipe.id = await recipeManagerClient.upsertRecipe(newRecipe);
+            history.push(`/recipe/${newRecipe.id}`);
+
+        } else {
+            const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
+
+            if (recipeIndex < 0) {
+                throw new Error('Recipe not found:' + recipe.id);
             }
 
-            this.openSnackbar(SnackbarSeverity.Success, snackbarMessage, snackbarUndo);
-       } catch(error) {
-            this.openSnackbar(SnackbarSeverity.Error, error.message, false);
-        }
+            const newRecipe = {...recipe};
+            const newRecipes = [...recipes];
+            newRecipes.splice(recipeIndex, 1, newRecipe);
+
+            this.setState({
+                recipes: newRecipes
+            });
+
+            await recipeManagerClient.upsertRecipe(newRecipe);
+        }        
     }
 
-    openSnackbar(severity: Severity, message: string, undo: boolean) {
-        this.setState({
-            snackbarOpen: true,
-            snackbarSeverity: severity,
-            snackbarMessage: message,
-            snackbarUndo: undo
-        });
-    }
+//     updateRecipeById(recipe: IRecipe, recipes: IRecipe[]) {
+//         const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
 
-    closeSnackbar() {   
-        this.setState({
-            snackbarOpen: false
-        }); 
-    }
+//         if (recipeIndex < 0) {
+//             throw new Error('Recipe not found:' + recipe.id);
+//         }
 
-    saveRecipes(event: React.FormEvent<HTMLElement>, recipe: IRecipe): void {
-        const newRecipes = this.updateRecipeById(
-            recipe,
-            this.state.recipes
-        );
+//         const newRecipe = {...recipe};
+//         const newRecipes = [...recipes];
+//         newRecipes.splice(recipeIndex, 1, newRecipe);
 
-        this.setState({
-            recipes: newRecipes
-        });
+//         return newRecipes;
+//    }    
 
-        this.submitRecipes(newRecipes, 'Recipe saved!', false);
-    }
+    // async deleteRecipe(recipeId: number, event: any): Promise<void> {
+    //     const newRecipes = this.deleteRecipeById(
+    //         recipeId,
+    //         this.state.recipes
+    //     );
 
-    updateRecipeById(recipe: IRecipe, recipes: IRecipe[]) {
-        const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
+    //     this.setState({
+    //         recipes: newRecipes
+    //     });
 
-        if (recipeIndex < 0) {
-            throw new Error('Recipe not found:' + recipe.id);
-        }
+    //     this.submitRecipes(newRecipes, 'Recipe removed!', true);
+    // }
 
-        const newRecipe = {...recipe};
-        const newRecipes = [...recipes];
-        newRecipes.splice(recipeIndex, 1, newRecipe);
+    // deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
+    //     return recipes.filter(r => r.id !== recipeId);
+    // }
 
-        return newRecipes;
-   }    
-
-    async deleteRecipe(recipeId: number, event: any): Promise<void> {
-        const newRecipes = this.deleteRecipeById(
-            recipeId,
-            this.state.recipes
-        );
-
-        this.setState({
-            recipes: newRecipes
-        });
-
-        this.submitRecipes(newRecipes, 'Recipe removed!', true);
-    }
-
-    deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
-        return recipes.filter(r => r.id !== recipeId);
-    }
-
-    addRecipe(): void {
-        const {recipes} = this.state;
+    async addRecipe(): Promise<void> {
         const newRecipe = {
-            id: recipes.length ? Math.max(...recipes.map(r => r.id)) + 1 : 1,
+            id: '',
             title: '',
             instructions: '',
             img: 'img-food/default.jpg',
             ingredients: ''
         };
-        const newRecipes = [newRecipe, ...recipes];
-
+        
         this.setState({
-            recipes: newRecipes
+            recipes: [newRecipe, ...this.state.recipes]
         });
         
-        history.push(`/recipe/${newRecipe.id}`);
-
-        this.submitRecipes(newRecipes, 'Recipe added!', false);
+        // newRecipe.id = await recipeManagerClient.upsertRecipe(newRecipe);
+        // history.push(`/recipe/${newRecipe.id}`);
     }
     
-    getRecipeById(): IRecipe {
-        return this.state.recipes.filter(
-            r => r.id === this.getUrlParams(this.props.location.pathname))[0]; 
+    getRecipeById(id: string): IRecipe {
+        const found = this.state.recipes.filter(r => r.id == id); // todo: use ===
+
+        if (!found.length) {
+            throw new Error(`Recipe not found: ${id}.`);
         }
+
+        return found[0];
+    }
         
     matchPath;
 
-    getUrlParams(pathname: string): number {
+    getRecipeIdFromUrl(pathname: string): string {
         this.matchPath = matchPath(pathname, {path: `/recipe/:id`});
-
-        return this.matchPath && + this.matchPath.params.id;
+        return this.matchPath && this.matchPath.params.id;
     }
 
     render() {
         const {error, isLoaded} = this.state;
-        let recipe: IRecipe;
         
         if (error) {
             return <div>Error: {error.message}</div>;
@@ -171,14 +168,11 @@ export default class RecipeList extends Component<any, IRecipeList> {
             return <div>Loading ...</div>
         }
         
-        recipe = this.getRecipeById();
+        // const recipe = this.getRecipeById() === undefined ? this.state.recipes[0] : this.getRecipeById();
 
         return (
             <React.Fragment>
-                <Header                    
-                    matchPath={this.matchPath}
-                    recipe={recipe}
-                    addRecipe={this.addRecipe} />
+                <HeaderWithRouter />                   
                 <Route exact path="/">
                     <div className="recipe-list-container">
                         {this.state.recipes.map(r => (
@@ -186,18 +180,20 @@ export default class RecipeList extends Component<any, IRecipeList> {
                         ))}
                     </div>
                 </Route>                                       
-                <Route path="/recipe/:id">
-                    <Recipe                        
-                        recipe={recipe}
-                        saveRecipes={this.saveRecipes}
-                        deleteRecipe={this.deleteRecipe} />
-                </Route>
-                <SnackbarMessage
+                <Route path="/recipe/:id" render={(props) => 
+                    (<Recipe
+                        {...props}
+                        getRecipeById={this.getRecipeById}                     
+                        saveRecipe={this.saveRecipe}
+                        // deleteRecipe={this.deleteRecipe}
+                    />)}
+                />                
+                {/* <SnackbarMessage
                     open={this.state.snackbarOpen}
                     severity={this.state.snackbarSeverity}
                     message={this.state.snackbarMessage}
                     undo={this.state.snackbarUndo}
-                    closeSnackbar={this.closeSnackbar} />
+                    closeSnackbar={this.closeSnackbar} />                     */}
             </React.Fragment>
         )
     }
