@@ -17,8 +17,7 @@ app.get('/recipes', async (req, res) => {
     try {
         const recipes = await recipeManager.getRecipes();
         res.setHeader('Content-Type', 'application/json');    
-        res.send(recipes);
-        res.status(200).send();
+        res.status(200).send(recipes);
     } catch(err) {
         res.status(500).send();
         throw err;
@@ -34,8 +33,7 @@ app.post('/recipes/add', async (req, res) => {
         }
     
         const recipeId = await recipeManager.addRecipe(recipe);
-        res.send({id: recipeId});
-        res.status(200).send();
+        res.status(200).send({id: recipeId});
     } catch(err) {
         res.status(500).send();
         throw err;
@@ -51,7 +49,6 @@ app.post('/recipes/update', async (req, res) => {
         }
 
         const recipeId = await recipeManager.updateRecipe(recipe);
-        res.send({id: recipeId});
         res.status(200).send();
     } catch(err) {
         res.status(500).send();

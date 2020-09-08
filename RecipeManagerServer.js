@@ -12,7 +12,10 @@ class RecipeManager {
     
         try {
             await client.connect();
-            return await client.db('recipes').collection('recipes').find().toArray();
+            
+            const recipes = await (await client.db('recipes').collection('recipes').find().toArray());
+            recipes.forEach(r => delete r._id);           
+            return recipes;
         } finally {
             await client.close();
         }
@@ -44,9 +47,10 @@ class RecipeManager {
             await client.connect();
             const collection = client.db('recipes').collection('recipes');
             const filter = {id: recipe.id};
-            const result = await collection.updateOne(filter, {$set: recipe});
+            delete recipe._id; // mongodb does not like to update _id
+            const result = await collection.replaceOne(filter, recipe);
     
-            if (!result.modifiedCount) {
+            if (!result.matchedCount) {
                 throw new Error('The recipe could not be updated.');
             }
             

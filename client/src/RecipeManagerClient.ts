@@ -12,7 +12,8 @@ export default class RecipeManagerClient {
     }
 
     async upsertRecipe(recipe: IRecipe): Promise<string> {
-        const url = recipe.id === '' ? '/recipes/add' : '/recipes/update';
+        const add = recipe.id === '';
+        const url = add ? '/recipes/add' : '/recipes/update';
 
         const response = await fetch(url, {
             method: 'POST',
@@ -24,7 +25,7 @@ export default class RecipeManagerClient {
             throw new Error('The recipe could not be saved.');
         }
 
-        return (await response.json()).id;
+        return add ? (await response.json()).id : recipe.id;
     }
 
     async deleteRecipe(recipeId: string) {

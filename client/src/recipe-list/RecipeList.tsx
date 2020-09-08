@@ -63,48 +63,33 @@ export default class RecipeList extends Component<any, IRecipeList> {
         const isRecipeNew = recipe.id === '';
 
         if (isRecipeNew) {
-            let newRecipe = {...recipe};
-            const newRecipes = [newRecipe, ...recipes];
+            recipe.id = await recipeManagerClient.upsertRecipe(recipe);
+            const newRecipes = [recipe, ...recipes];
 
             this.setState({
                 recipes: newRecipes
             });
 
-            newRecipe.id = await recipeManagerClient.upsertRecipe(newRecipe);
-            history.push(`/recipe/${newRecipe.id}`);
+            history.push(`/recipe/${recipe.id}`);
 
-        } else {
-            const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
+            return;
+        }
+        
+        const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
 
-            if (recipeIndex < 0) {
-                throw new Error('Recipe not found:' + recipe.id);
-            }
+        if (recipeIndex < 0) {
+            throw new Error('Recipe not found:' + recipe.id);
+        }
 
-            const newRecipe = {...recipe};
-            const newRecipes = [...recipes];
-            newRecipes.splice(recipeIndex, 1, newRecipe);
+        await recipeManagerClient.upsertRecipe(recipe);
+        const newRecipe = {...recipe};
+        const newRecipes = [...recipes];
+        newRecipes.splice(recipeIndex, 1, newRecipe);
 
-            this.setState({
-                recipes: newRecipes
-            });
-
-            await recipeManagerClient.upsertRecipe(newRecipe);
-        }        
-    }
-
-//     updateRecipeById(recipe: IRecipe, recipes: IRecipe[]) {
-//         const recipeIndex = recipes.findIndex(r => r.id === recipe.id);
-
-//         if (recipeIndex < 0) {
-//             throw new Error('Recipe not found:' + recipe.id);
-//         }
-
-//         const newRecipe = {...recipe};
-//         const newRecipes = [...recipes];
-//         newRecipes.splice(recipeIndex, 1, newRecipe);
-
-//         return newRecipes;
-//    }    
+        this.setState({
+            recipes: newRecipes
+        });
+    }    
 
     // async deleteRecipe(recipeId: number, event: any): Promise<void> {
     //     const newRecipes = this.deleteRecipeById(
