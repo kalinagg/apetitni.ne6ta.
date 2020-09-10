@@ -58,7 +58,7 @@ app.post('/recipes/update', async (req, res) => {
 
 app.post('/recipes/delete', async (req, res) => {
     try {
-        let recipeId = req.body;
+        const recipeId = req.body.id;
 
         if (typeof recipeId !== 'string') {
             throw new Error('Expected recipeId to be a string.');

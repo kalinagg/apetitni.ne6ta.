@@ -28,9 +28,8 @@ interface IRecipeState {
 class Recipe extends Component<IRecipeProps, IRecipeState> {
     constructor(props: IRecipeProps) {
         super(props);
-        console.log(props);
         const recipeId = (props as any).match.params.id;
-        const isRecipeNew =  recipeId === 'new';
+        const isRecipeNew = recipeId === 'new';
         const recipe = isRecipeNew
             ? {
                 id: '',
@@ -206,16 +205,16 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                                 </IconButton>
                                 <IconButton className="save-icon" aria-label="Save"
                                     // onClick={e => this.saveAndDoReadMode(e, recipe)}>
-                                    onClick={async e => await this.props.saveRecipe(e, recipe)}>
+                                    onClick={async () => await this.props.saveRecipe(recipe)}>
                                     <SaveAltIcon />
                                 </IconButton>
                                 <IconButton className="share-icon" aria-label="Share">
                                     <ShareIcon />
                                 </IconButton>
                                 <Link to='/'>
-                                    <IconButton className="delete-icon" aria-label="Delete"
-                                        >
-                                        {/* onClick={e => this.props.deleteRecipe(recipe.id, e)}> */}
+                                    <IconButton
+                                        className="delete-icon" aria-label="Delete"                                    
+                                        onClick={async () => await this.props.deleteRecipe(recipe.id)}> 
                                         <DeleteIcon />
                                     </IconButton>
                                 </Link>

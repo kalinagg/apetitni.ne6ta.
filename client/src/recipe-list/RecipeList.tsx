@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Route, matchPath} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import HeaderWithRouter from '../header/Header';
 import Recipe from '../recipe/Recipe';
 import IRecipe from '../recipe/IRecipe';
@@ -26,7 +26,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         };
 
         this.saveRecipe = this.saveRecipe.bind(this);      
-        // this.deleteRecipe = this.deleteRecipe.bind(this);
+        this.deleteRecipe = this.deleteRecipe.bind(this);
         this.addRecipe = this.addRecipe.bind(this);        
         // this.closeSnackbar = this.closeSnackbar.bind(this);
         this.getRecipeById = this.getRecipeById.bind(this);
@@ -58,7 +58,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
     //     }); 
     // }
 
-    async saveRecipe(event: React.FormEvent<HTMLElement>, recipe: IRecipe): Promise<void> {
+    async saveRecipe(recipe: IRecipe): Promise<void> {
         const {recipes} = this.state;
         const isRecipeNew = recipe.id === '';
 
@@ -71,7 +71,6 @@ export default class RecipeList extends Component<any, IRecipeList> {
             });
 
             history.push(`/recipe/${recipe.id}`);
-
             return;
         }
         
@@ -82,6 +81,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
         }
 
         await recipeManagerClient.upsertRecipe(recipe);
+
         const newRecipe = {...recipe};
         const newRecipes = [...recipes];
         newRecipes.splice(recipeIndex, 1, newRecipe);
@@ -89,25 +89,9 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.setState({
             recipes: newRecipes
         });
-    }    
+    }
 
-    // async deleteRecipe(recipeId: number, event: any): Promise<void> {
-    //     const newRecipes = this.deleteRecipeById(
-    //         recipeId,
-    //         this.state.recipes
-    //     );
-
-    //     this.setState({
-    //         recipes: newRecipes
-    //     });
-
-    //     this.submitRecipes(newRecipes, 'Recipe removed!', true);
-    // }
-
-    // deleteRecipeById(recipeId: number, recipes: IRecipe[]) {
-    //     return recipes.filter(r => r.id !== recipeId);
-    // }
-
+    
     async addRecipe(): Promise<void> {
         const newRecipe = {
             id: '',
@@ -120,11 +104,21 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.setState({
             recipes: [newRecipe, ...this.state.recipes]
         });
-        
-        // newRecipe.id = await recipeManagerClient.upsertRecipe(newRecipe);
-        // history.push(`/recipe/${newRecipe.id}`);
     }
     
+    async deleteRecipe(id: string): Promise<void> {
+        if (typeof id !== 'string') {
+            throw new Error(`RecipeId should be a string and not ${typeof id}`);
+        }
+
+        await recipeManagerClient.deleteRecipe(id);
+
+        const newRecipes = this.state.recipes.filter(r => r.id !== id);
+        this.setState({
+            recipes: newRecipes
+        });
+    }
+
     getRecipeById(id: string): IRecipe {
         const found = this.state.recipes.filter(r => r.id == id); // todo: use ===
 
@@ -133,13 +127,6 @@ export default class RecipeList extends Component<any, IRecipeList> {
         }
 
         return found[0];
-    }
-        
-    matchPath;
-
-    getRecipeIdFromUrl(pathname: string): string {
-        this.matchPath = matchPath(pathname, {path: `/recipe/:id`});
-        return this.matchPath && this.matchPath.params.id;
     }
 
     render() {
@@ -153,8 +140,6 @@ export default class RecipeList extends Component<any, IRecipeList> {
             return <div>Loading ...</div>
         }
         
-        // const recipe = this.getRecipeById() === undefined ? this.state.recipes[0] : this.getRecipeById();
-
         return (
             <React.Fragment>
                 <HeaderWithRouter />                   
@@ -170,7 +155,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
                         {...props}
                         getRecipeById={this.getRecipeById}                     
                         saveRecipe={this.saveRecipe}
-                        // deleteRecipe={this.deleteRecipe}
+                        deleteRecipe={this.deleteRecipe}
                     />)}
                 />                
                 {/* <SnackbarMessage

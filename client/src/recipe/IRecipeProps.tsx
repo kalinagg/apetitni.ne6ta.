@@ -2,9 +2,8 @@ import React from 'react';
 import IRecipe from './IRecipe';
 
 export default interface IRecipeProps {
-    // recipe: IRecipe;
     classes: any;
-    saveRecipe(event: React.FormEvent<HTMLElement>, recipe: IRecipe): Promise<void>;
-    // deleteRecipe(recipeId: number, event: any): void;
+    saveRecipe(recipe: IRecipe): Promise<void>;
+    deleteRecipe(id: string): Promise<void>
     getRecipeById(id: string): IRecipe;
 }

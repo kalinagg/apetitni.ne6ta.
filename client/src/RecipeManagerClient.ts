@@ -32,7 +32,7 @@ export default class RecipeManagerClient {
         const response = await fetch('/recipes/delete', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(recipeId)
+            body: JSON.stringify({id: recipeId})
         });
 
         if(!response.ok) {
