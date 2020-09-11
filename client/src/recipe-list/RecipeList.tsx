@@ -117,6 +117,8 @@ export default class RecipeList extends Component<any, IRecipeList> {
         this.setState({
             recipes: newRecipes
         });
+
+        history.push('/');
     }
 
     getRecipeById(id: string): IRecipe {

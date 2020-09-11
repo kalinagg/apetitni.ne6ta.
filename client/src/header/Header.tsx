@@ -8,10 +8,8 @@ import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import './Header.scss';
-import IRecipe from '../recipe/IRecipe';
 
 import {withRouter} from 'react-router';
-
 const HeaderWithRouter = withRouter(props => <Header {...props}/>);
 export default HeaderWithRouter;
 
@@ -22,7 +20,7 @@ class Header extends Component<IHeaderProps> {
         const isOnRecipeList = matchPath((this.props as any).location.pathname, {path: `/recipe/:id`});
         
         return (
-            <div className="header-container">        
+            <div className="header-container">     
                 <Link to='/' className={clsx(!isOnRecipeList && "hidden")}>
                     <IconButton>
                         <KeyboardBackspaceIcon style={{color: '#666'}} />

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import IRecipe from './IRecipe';
 import IRecipeProps from './IRecipeProps';
-import {Link} from 'react-router-dom';
 import {withStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
@@ -16,11 +15,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import UndoIcon from '@material-ui/icons/Undo';
-import imageCompression from 'browser-image-compression';
+import compressImage from 'browser-image-compression';
 import './Recipe.scss';
 
 interface IRecipeState {
     recipe: IRecipe;
+    recipeBeforeChange: IRecipe;
     isUploading: boolean;
     isEditMode: boolean;
 }
@@ -35,29 +35,24 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                 id: '',
                 title: '',
                 instructions: '',
-                img: 'img-food/default.jpg',
+                img: '/img-food/default.jpg',
                 ingredients: ''}
             : props.getRecipeById(recipeId);
 
         this.state = {
             recipe,
+            recipeBeforeChange: recipe,
             isUploading: false,
             isEditMode: isRecipeNew
-        }    
+        }        
 
         this.updateTitle = this.updateTitle.bind(this);
         this.updateIngredients = this.updateIngredients.bind(this);
         this.updateInstructions = this.updateInstructions.bind(this);
-        this.uploadImage = this.uploadImage.bind(this);
-        this.cancelEdit = this.cancelEdit.bind(this);
-        this.edit = this.edit.bind(this);
-        this.saveAndDoReadMode = this.saveAndDoReadMode.bind(this);        
-    }
-
-    isEdited() {
-        // const {title, ingredients, instructions} = this.state.recipe;
-        // return title.length || ingredients.length || instructions.length;
-        return true;
+        this.handleUploadImage = this.handleUploadImage.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
+        this.handleSave = this.handleSave.bind(this);        
     }
 
     updateTitle(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
@@ -80,7 +75,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         });
     }
 
-    updateInstructions(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void { 
+    updateInstructions(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
         this.setState({
             ...this.state,
             recipe: {
@@ -90,9 +85,21 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         });      
     }
 
-    async uploadImage(event): Promise<void> {
-        const formData = new FormData();
+    async handleUploadImage(event): Promise<void> {    
+        this.setState({isUploading: true});
+            
         const image = event.target.files[0];
+        this.setState({
+            ...this.state,
+            isUploading: false,
+            recipe: {
+                ...this.state.recipe,
+                img: await this.compressImage(image)
+            }
+        });       
+    }
+
+    async compressImage(file: File | Blob ): Promise<string> {
         const options = {
             maxSizeMB: .2,
             maxWidthOrHeight: 450,
@@ -100,54 +107,39 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
             fileType: 'image/jpeg'
         };
 
-        try {       
-            this.setState({isUploading: true});
+        const compressedImage = await compressImage(file, options);
+        const base64Image = await this.convertToBase64(compressedImage);
 
-            const compressedImage = await imageCompression(image, options);
-            formData.append('image', compressedImage);
-
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
-
-            const imagePathArr = await response.json();
-            this.setState({
-                // img: imagePathArr[0],
-                isUploading: false
-            });
-       } catch(error) {
-            // this.setState({error});
-        }
+        return base64Image;
     }
 
-    edit(): void {
-        this.doEditMode();
-        this.recipeBeforeChange = this.state;
-    }    
-
-    recipeBeforeChange = {};
-
-    cancelEdit(): void {
-        this.doReadMode();
-        this.setState(this.recipeBeforeChange);
+    convertToBase64(file: File | Blob): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string); 
+            reader.onerror = err => reject(err);
+        });
     }
 
-    doEditMode(): void {
+    handleEdit(): void {
         this.setState({
             isEditMode: true
         });
     }
 
-    doReadMode(): void {
+    handleCancel(): void {        
+        this.setState({
+            isEditMode: false,
+            recipe: this.state.recipeBeforeChange
+        });
+    }
+
+    handleSave(recipe: IRecipe): void {
+        this.props.saveRecipe(recipe);        
         this.setState({
             isEditMode: false
         })
-    }
-
-    saveAndDoReadMode(event: React.MouseEvent<HTMLButtonElement>, recipe: IRecipe): void {
-        // this.props.saveRecipe(event, recipe);
-        this.doReadMode();
     }
 
     render() {
@@ -179,11 +171,9 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                                             "recipe-phoro-camera-icon",
                                             isEditMode && !isUploading && "visible")}/>
                                 <img
-                                    className={
-                                        clsx(
-                                            "recipe-image",
-                                            isUploading && "transparent")}
-                                    src={`/${recipe.img}`} alt={recipe.title} />
+                                    className={clsx("recipe-image", isUploading && "transparent")}
+                                    src={recipe.img}
+                                    alt={recipe.title} />
                             </label>
                             <input
                                 disabled={!isEditMode}
@@ -191,33 +181,30 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                                 name="image"
                                 id={"image-upload-" + recipe.id}
                                 className="displayNone"
-                                onChange={this.uploadImage} />
+                                onChange={this.handleUploadImage} />
                         </div>
                         <div className="recipe-input-container">
                             <CardActions className={clsx(classes.cardActions)} disableSpacing>
                                 <IconButton className="edit-icon" aria-label="Edit"
-                                    onClick={this.edit}>
+                                    onClick={this.handleEdit}>
                                     <EditIcon />
                                 </IconButton>
                                 <IconButton className="undo-icon" aria-label="Undo"
-                                    onClick={this.cancelEdit}>
+                                    onClick={this.handleCancel}>
                                     <UndoIcon />
                                 </IconButton>
                                 <IconButton className="save-icon" aria-label="Save"
-                                    // onClick={e => this.saveAndDoReadMode(e, recipe)}>
-                                    onClick={async () => await this.props.saveRecipe(recipe)}>
+                                    onClick={async () => await this.handleSave(recipe)}>
                                     <SaveAltIcon />
                                 </IconButton>
                                 <IconButton className="share-icon" aria-label="Share">
                                     <ShareIcon />
+                                </IconButton>                                
+                                <IconButton
+                                    className="delete-icon" aria-label="Delete"                                    
+                                    onClick={async () => await this.props.deleteRecipe(recipe.id)}> 
+                                    <DeleteIcon />
                                 </IconButton>
-                                <Link to='/'>
-                                    <IconButton
-                                        className="delete-icon" aria-label="Delete"                                    
-                                        onClick={async () => await this.props.deleteRecipe(recipe.id)}> 
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Link>
                             </CardActions>
                             <div className="recipe-input recipe-input-first">
                                 <TextField
