@@ -67,11 +67,6 @@ app.post('/recipes/delete', async (req, res) => {
     }
 });
 
-// Serve the image files from root
-app.get('/img-food/*', (req, res) => {
-    res.sendFile(path.join(__dirname, req.path));
-});
-
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 

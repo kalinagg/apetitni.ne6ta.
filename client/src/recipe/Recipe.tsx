@@ -16,6 +16,7 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import UndoIcon from '@material-ui/icons/Undo';
 import compressImage from 'browser-image-compression';
+import newRecipeImageUrl from '../new-recipe.jpg';
 import './Recipe.scss';
 
 interface IRecipeState {
@@ -35,7 +36,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                 id: '',
                 title: '',
                 instructions: '',
-                img: '/img-food/default.jpg',
+                img: newRecipeImageUrl,
                 ingredients: ''}
             : props.getRecipeById(recipeId);
 

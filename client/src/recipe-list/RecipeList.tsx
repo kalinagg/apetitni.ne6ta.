@@ -7,6 +7,7 @@ import RecipeThumbnail from '../recipe-thumbnail/RecipeThumbnail';
 import SnackbarMessage, {SnackbarSeverity, Severity} from '../snackbar/SnackbarMessage';
 import IRecipeList from './IRecipeList';
 import history from '../history';
+import newRecipeImageUrl from '../new-recipe.jpg'
 import './RecipeList.scss';
 
 import RecipeManagerClient from '../RecipeManagerClient';
@@ -97,7 +98,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
             id: '',
             title: '',
             instructions: '',
-            img: 'img-food/default.jpg',
+            img: newRecipeImageUrl,
             ingredients: ''
         };
         
@@ -122,7 +123,7 @@ export default class RecipeList extends Component<any, IRecipeList> {
     }
 
     getRecipeById(id: string): IRecipe {
-        const found = this.state.recipes.filter(r => r.id == id); // todo: use ===
+        const found = this.state.recipes.filter(r => r.id === id);
 
         if (!found.length) {
             throw new Error(`Recipe not found: ${id}.`);
