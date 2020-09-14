@@ -102,7 +102,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
 
     async compressImage(file: File | Blob ): Promise<string> {
         const options = {
-            maxSizeMB: .2,
+            maxSizeMB: .05,
             maxWidthOrHeight: 450,
             useWebWorker: true,
             fileType: 'image/jpeg'
@@ -139,7 +139,8 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
     handleSave(recipe: IRecipe): void {
         this.props.saveRecipe(recipe);        
         this.setState({
-            isEditMode: false
+            isEditMode: false,
+            recipeBeforeChange: recipe
         })
     }
 

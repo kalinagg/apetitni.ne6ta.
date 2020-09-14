@@ -36,7 +36,7 @@ export default class RecipeManagerClient {
         });
 
         if(!response.ok) {
-            throw new Error('Could not delete recipe.');
+            throw new Error('The recipe could not be deleted.');
         }
     }
 }
