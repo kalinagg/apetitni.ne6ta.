@@ -16,7 +16,7 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import UndoIcon from '@material-ui/icons/Undo';
 import compressImage from 'browser-image-compression';
-import newRecipeImageUrl from '../new-recipe.jpg';
+import newRecipeImageUrl from '../../new-recipe.jpg';
 import './Recipe.scss';
 
 interface IRecipeState {
@@ -38,7 +38,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                 instructions: '',
                 img: newRecipeImageUrl,
                 ingredients: ''}
-            : props.getRecipeById(recipeId);
+            : props.selectedRecipe;
 
         this.state = {
             recipe,
@@ -53,7 +53,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         this.handleUploadImage = this.handleUploadImage.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
-        this.handleSave = this.handleSave.bind(this);        
+        // this.handleSave = this.handleSave.bind(this);
     }
 
     updateTitle(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
@@ -136,13 +136,13 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         });
     }
 
-    handleSave(recipe: IRecipe): void {
-        this.props.saveRecipe(recipe);        
-        this.setState({
-            isEditMode: false,
-            recipeBeforeChange: recipe
-        })
-    }
+    // handleSave(recipe: IRecipe): void {
+    //     this.props.saveRecipe(recipe);        
+    //     this.setState({
+    //         isEditMode: false,
+    //         recipeBeforeChange: recipe
+    //     })
+    // }
 
     render() {
         const {recipe, isEditMode, isUploading} = this.state;
@@ -196,15 +196,17 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                                     <UndoIcon />
                                 </IconButton>
                                 <IconButton className="save-icon" aria-label="Save"
-                                    onClick={async () => await this.handleSave(recipe)}>
-                                    <SaveAltIcon />
+                                    >
+                                    {/* onClick={async () => await this.handleSave(recipe)}> */}
+                                    {/* <SaveAltIcon /> */}
                                 </IconButton>
                                 <IconButton className="share-icon" aria-label="Share">
                                     <ShareIcon />
                                 </IconButton>                                
                                 <IconButton
-                                    className="delete-icon" aria-label="Delete"                                    
-                                    onClick={async () => await this.props.deleteRecipe(recipe.id)}> 
+                                    className="delete-icon" aria-label="Delete"
+                                    >                                   
+                                    {/* onClick={async () => await this.props.deleteRecipe(recipe.id)}>  */}
                                     <DeleteIcon />
                                 </IconButton>
                             </CardActions>

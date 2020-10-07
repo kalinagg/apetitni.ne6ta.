@@ -1,4 +1,4 @@
-import IRecipe from './recipe/IRecipe';
+import IRecipe from '../components/recipe/IRecipe';
 
 export default class RecipeManagerClient {
     async getRecipes(): Promise<IRecipe[]> {        

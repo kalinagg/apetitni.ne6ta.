@@ -1,7 +1,7 @@
 import IRecipe from '../recipe/IRecipe';
 import {Severity} from '../snackbar/SnackbarMessage';
 
-export default interface IRecipeList {
+export default interface IApp {
     error?: {message: string};
     isLoaded: boolean;
     recipes: IRecipe[];

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
-import {matchPath} from 'react-router-dom';
+import {Link, matchPath} from 'react-router-dom';
 import clsx from 'clsx';
 import Logo from '../logo/Logo';
 import Fab from '@material-ui/core/Fab';

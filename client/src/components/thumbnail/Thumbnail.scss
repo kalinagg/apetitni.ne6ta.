@@ -2,7 +2,7 @@ $text-color:   #666;
 $border-color: #ccc;
 $shadow-color: #bbb;
 
-.recipe-thumbnail {
+.thumbnail {
     h2 {
         font-size: 15px;
         font-family: 'Source Sans Pro', sans-serif;
@@ -17,7 +17,7 @@ $shadow-color: #bbb;
         overflow: hidden;
     }
 
-    .recipe-image {
+    .thumbnail-image {
         width: 100%;
     }
 }
