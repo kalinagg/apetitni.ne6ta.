@@ -3,7 +3,7 @@ import {Router, Switch, Route} from 'react-router-dom';
 import history from '../../helpers/history';
 import HeaderWithRouter from '../header/Header';
 import Footer from '../footer/Footer';
-import { fetchRecipes, selectRecipe } from '../../actions';
+import { fetchRecipes, selectRecipe, updateRecipeId, upsertRecipe } from '../../actions';
 import { connect } from 'react-redux';
 import Recipe from '../recipe/Recipe';
 import List from '../list/List';
@@ -12,11 +12,11 @@ import IApp from './IApp';
 class App extends Component<any, IApp> {
     componentDidMount() {
         const {recipes, fetchRecipes} = this.props;        
-        fetchRecipes(recipes);   
+        fetchRecipes();        
     }
 
     render() {
-        const {error, isLoaded, recipes, selectedRecipe, selectRecipe} = this.props;
+        const {error, isLoaded, recipes, selectedRecipe, selectRecipe, upsertRecipe, updateRecipeId} = this.props;        
         
         return (
             <React.StrictMode>
@@ -30,7 +30,8 @@ class App extends Component<any, IApp> {
                             (<Recipe
                                 {...props}
                                 selectedRecipe={selectedRecipe}
-                                // saveRecipe={this.saveRecipe}
+                                upsertRecipe={upsertRecipe}
+                                updateRecipeId={updateRecipeId}
                                 // deleteRecipe={this.deleteRecipe}
                             />)}
                         />
@@ -59,8 +60,10 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchRecipes: recipes => dispatch(fetchRecipes(recipes)),
-    selectRecipe: recipeId => dispatch(selectRecipe(recipeId))
+    fetchRecipes: () => dispatch(fetchRecipes()),
+    selectRecipe: recipeId => dispatch(selectRecipe(recipeId)),
+    upsertRecipe: recipe => dispatch(upsertRecipe(recipe)),
+    updateRecipeId: recipeId => dispatch(updateRecipeId(recipeId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

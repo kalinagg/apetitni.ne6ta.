@@ -10,6 +10,7 @@ export const ADD_RECIPE = 'ADD_RECIPE';
 export const DELETE_RECIPE = 'DELETE_RECIPE';
 export const OPEN_SNACKBAR = 'OPEN_SNACKBAR';
 export const CLOSE_SNACKBAR = 'CLOSE_SNACKBAR';
+export const UPDATE_RECIPE_ID = 'UPDATE_RECIPE_ID';
 
 // Recipe
 export const UPDATE_TITLE = 'UPDATE_TITLE';
@@ -36,4 +37,14 @@ export interface SelectRecipeAction {
     recipeId: string;
 }
 
-export type RecipeActionTypes = ShowRecipesAction | SelectRecipeAction;
+export interface SaveRecipeAction {
+    type: typeof SAVE_RECIPE;
+    recipe: IRecipe;
+}
+
+export interface UpdateRecipeId {
+    type: typeof UPDATE_RECIPE_ID;
+    recipeId: string;
+}
+
+export type RecipeActionTypes = ShowRecipesAction | SelectRecipeAction | SaveRecipeAction | UpdateRecipeId;

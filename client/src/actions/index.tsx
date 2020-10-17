@@ -13,7 +13,17 @@ export const showRecipes = (recipes: IRecipe[]): types.ShowRecipesAction => ({
     type: types.SHOW_RECIPES,
     recipes
 });
-export const saveRecipe = recipe => ({type: types.SAVE_RECIPE, recipe});
+
+export const saveRecipe = (recipe: IRecipe): types.SaveRecipeAction => ({
+    type: types.SAVE_RECIPE,
+    recipe
+});
+
+export const updateRecipeId = (recipeId: string): types.UpdateRecipeId => ({
+    type: types.UPDATE_RECIPE_ID,
+    recipeId
+});
+
 export const addRecipe = recipe => ({type: types.ADD_RECIPE, recipe});
 export const deleteRecipe = recipe => ({type: types.DELETE_RECIPE, recipe});
 export const openSnackbar = snackbar => ({type: types.OPEN_SNACKBAR, snackbar});
@@ -30,11 +40,22 @@ export const save = recipe => ({type: types.SAVE, recipe});
 
 const recipeManagerClient = new RecipeManagerClient();
 
-export const fetchRecipes = recipes => {
+export const fetchRecipes = () => {
     return async dispatch => {
         try {
             const recipes = await recipeManagerClient.getRecipes();
             dispatch(showRecipes(recipes));
+        } catch(err) {
+            console.log(err);
+        }
+    }
+}
+
+export const upsertRecipe = recipe => {
+    return async dispatch => {
+        try {
+            dispatch(saveRecipe(recipe));
+            return await recipeManagerClient.upsertRecipe(recipe);
         } catch(err) {
             console.log(err);
         }

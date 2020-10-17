@@ -16,6 +16,7 @@ import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import UndoIcon from '@material-ui/icons/Undo';
 import compressImage from 'browser-image-compression';
+import history from '../../helpers/history';
 import newRecipeImageUrl from '../../new-recipe.jpg';
 import './Recipe.scss';
 
@@ -136,17 +137,20 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         });
     }
 
-    // handleSave(recipe: IRecipe): void {
-    //     this.props.saveRecipe(recipe);        
-    //     this.setState({
-    //         isEditMode: false,
-    //         recipeBeforeChange: recipe
-    //     })
-    // }
+    async handleSave(recipe: IRecipe): Promise<void> {
+        const recipeId = await this.props.upsertRecipe(recipe);
+        this.props.updateRecipeId(recipeId);
+        history.push(`/recipe/${recipeId}`);
+
+        this.setState({
+            isEditMode: false,
+            recipeBeforeChange: recipe
+        });
+    }
 
     render() {
         const {recipe, isEditMode, isUploading} = this.state;
-        const classes = this.props.classes;
+        const classes = this.props.classes;        
 
         return (
             <Card
@@ -196,9 +200,8 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                                     <UndoIcon />
                                 </IconButton>
                                 <IconButton className="save-icon" aria-label="Save"
-                                    >
-                                    {/* onClick={async () => await this.handleSave(recipe)}> */}
-                                    {/* <SaveAltIcon /> */}
+                                    onClick={async () => await this.handleSave(recipe)}>
+                                    <SaveAltIcon />
                                 </IconButton>
                                 <IconButton className="share-icon" aria-label="Share">
                                     <ShareIcon />
