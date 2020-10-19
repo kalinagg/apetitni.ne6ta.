@@ -54,7 +54,8 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         this.handleUploadImage = this.handleUploadImage.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
-        // this.handleSave = this.handleSave.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     updateTitle(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
@@ -137,6 +138,11 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         });
     }
 
+    async handleDelete(recipeId: string): Promise<void> {
+        await this.props.deleteRecipe(recipeId);
+        history.push('/');
+    }
+
     async handleSave(recipe: IRecipe): Promise<void> {
         const recipeId = await this.props.upsertRecipe(recipe);
         this.props.updateRecipeId(recipeId);
@@ -208,8 +214,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                                 </IconButton>                                
                                 <IconButton
                                     className="delete-icon" aria-label="Delete"
-                                    >                                   
-                                    {/* onClick={async () => await this.props.deleteRecipe(recipe.id)}>  */}
+                                    onClick={async () => await this.handleDelete(recipe.id)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </CardActions>

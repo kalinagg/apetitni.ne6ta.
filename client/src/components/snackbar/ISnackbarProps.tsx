@@ -1,4 +1,4 @@
-import {Severity} from './SnackbarMessage';
+import {Severity} from '../../constants/types';
 
 export default interface ISnackbarProps {
     classes: any;

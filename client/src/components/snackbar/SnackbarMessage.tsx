@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import ISnackbarProps from './ISnackbarProps';
 
-export type Severity = 'success' | 'info' | 'warning' | 'error';
+// export type Severity = 'success' | 'info' | 'warning' | 'error';
 
 export enum SnackbarSeverity {
     Success = 'success',

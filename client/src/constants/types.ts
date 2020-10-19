@@ -42,9 +42,36 @@ export interface SaveRecipeAction {
     recipe: IRecipe;
 }
 
-export interface UpdateRecipeId {
+export interface UpdateRecipeIdAction {
     type: typeof UPDATE_RECIPE_ID;
     recipeId: string;
 }
 
-export type RecipeActionTypes = ShowRecipesAction | SelectRecipeAction | SaveRecipeAction | UpdateRecipeId;
+export interface DeleteRecipeAction {
+    type: typeof DELETE_RECIPE;
+    recipeId: string;
+}
+
+export type RecipeActionTypes = 
+    ShowRecipesAction | SelectRecipeAction | SaveRecipeAction | UpdateRecipeIdAction | DeleteRecipeAction;
+
+export type Severity = 'success' | 'error';
+
+export interface SnackbarState {
+    open: boolean;
+    severity: Severity;
+    message: string;
+    undo: boolean;
+}
+
+export interface OpenSnackbarAction {
+    type: typeof OPEN_SNACKBAR;
+    severity: Severity;
+    message: string;
+}
+
+export interface CloseSnackbarAction {
+    type: typeof CLOSE_SNACKBAR;
+}
+
+export type SnackbarActionTypes = OpenSnackbarAction | CloseSnackbarAction;

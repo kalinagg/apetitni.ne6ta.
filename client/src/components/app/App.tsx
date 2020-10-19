@@ -3,20 +3,28 @@ import {Router, Switch, Route} from 'react-router-dom';
 import history from '../../helpers/history';
 import HeaderWithRouter from '../header/Header';
 import Footer from '../footer/Footer';
-import { fetchRecipes, selectRecipe, updateRecipeId, upsertRecipe } from '../../actions';
+import SnackbarMessage from '../snackbar/SnackbarMessage';
+import { closeSnackbar, deleteRecipeFromServer, fetchRecipes, selectRecipe, updateRecipeId, upsertRecipe } from '../../actions';
 import { connect } from 'react-redux';
 import Recipe from '../recipe/Recipe';
 import List from '../list/List';
-import IApp from './IApp';
 
-class App extends Component<any, IApp> {
+class App extends Component<any, {}> {
     componentDidMount() {
-        const {recipes, fetchRecipes} = this.props;        
-        fetchRecipes();        
+        this.props.fetchRecipes();        
     }
 
     render() {
-        const {error, isLoaded, recipes, selectedRecipe, selectRecipe, upsertRecipe, updateRecipeId} = this.props;        
+        const {
+            error,
+            isLoaded,
+            recipes,
+            selectedRecipe,
+            selectRecipe,
+            upsertRecipe,
+            updateRecipeId,
+            deleteRecipe,
+            open, severity, message, undo, closeSnackbar} = this.props;        
         
         return (
             <React.StrictMode>
@@ -32,16 +40,16 @@ class App extends Component<any, IApp> {
                                 selectedRecipe={selectedRecipe}
                                 upsertRecipe={upsertRecipe}
                                 updateRecipeId={updateRecipeId}
-                                // deleteRecipe={this.deleteRecipe}
+                                deleteRecipe={deleteRecipe}
                             />)}
                         />
-                        {/* <SnackbarMessage
-                            open={this.state.snackbarOpen}
-                            severity={this.state.snackbarSeverity}
-                            message={this.state.snackbarMessage}
-                            undo={this.state.snackbarUndo}
-                            closeSnackbar={this.closeSnackbar} /> */}
                     </Switch>         
+                    <SnackbarMessage
+                        open={open}
+                        severity={severity}
+                        message={message}
+                        undo={undo}
+                        closeSnackbar={closeSnackbar} />
                     <Footer />
                 </Router>
             </React.StrictMode>
@@ -51,11 +59,16 @@ class App extends Component<any, IApp> {
 
 const mapStateToProps = state => {
     const {isLoaded, recipes, selectedRecipe} = state.recipesReducer;
+    const {open, severity, message, undo} = state.snackbarReducer;
 
     return {
         isLoaded,
         recipes,
-        selectedRecipe
+        selectedRecipe,
+        open,
+        severity,
+        message,
+        undo
     }
 }
 
@@ -63,7 +76,9 @@ const mapDispatchToProps = dispatch => ({
     fetchRecipes: () => dispatch(fetchRecipes()),
     selectRecipe: recipeId => dispatch(selectRecipe(recipeId)),
     upsertRecipe: recipe => dispatch(upsertRecipe(recipe)),
-    updateRecipeId: recipeId => dispatch(updateRecipeId(recipeId))
+    updateRecipeId: recipeId => dispatch(updateRecipeId(recipeId)),
+    deleteRecipe: recipeId => dispatch(deleteRecipeFromServer(recipeId)),
+    closeSnackbar: () => dispatch(closeSnackbar())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

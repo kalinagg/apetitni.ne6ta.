@@ -1,7 +1,7 @@
 import IRecipe from '../components/recipe/IRecipe';
-import { SHOW_RECIPES, SELECT_RECIPE, RecipeState, RecipeActionTypes, SAVE_RECIPE, UPDATE_RECIPE_ID } from '../constants/types';
+import { SHOW_RECIPES, SELECT_RECIPE, RecipeState, RecipeActionTypes, SAVE_RECIPE, UPDATE_RECIPE_ID, DELETE_RECIPE } from '../constants/types';
 
-const initialState: RecipeState = {
+const initialRecipeState: RecipeState = {
     isLoaded: false,
     recipes: [],
     selectedRecipe: {
@@ -13,7 +13,7 @@ const initialState: RecipeState = {
     }
 }
 
-const recipesReducer = (state = initialState, action: RecipeActionTypes) => {
+const recipesReducer = (state = initialRecipeState, action: RecipeActionTypes) => {
     switch (action.type) {
         case SHOW_RECIPES:
             return ({
@@ -41,7 +41,8 @@ const recipesReducer = (state = initialState, action: RecipeActionTypes) => {
 
                 savedRecipes = [...state.recipes];
                 savedRecipes.splice(recipeIndex, 1, action.recipe);
-            }                
+            }
+
             return ({
                 ...state,
                 recipes: savedRecipes
@@ -54,13 +55,24 @@ const recipesReducer = (state = initialState, action: RecipeActionTypes) => {
 
             const updatedRecipe = state.recipes[recipeIndex];
             updatedRecipe.id = action.recipeId;
-            
+
             const updatedRecipes = [...state.recipes];            
             updatedRecipes.splice(recipeIndex, 1, updatedRecipe);
 
             return ({
                 ...state,
                 recipes: updatedRecipes
+            });
+        case DELETE_RECIPE:
+            if (typeof action.recipeId !== 'string') {
+                throw new Error(`RecipeId should be a string and not ${typeof action.recipeId}.`);
+            }
+
+            const newRecipes = state.recipes.filter(r => r.id !== action.recipeId);
+
+            return ({
+                ...state,
+                recipes: newRecipes
             });
         default:
             return state;
