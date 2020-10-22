@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import IRecipe from './IRecipe';
-import IRecipeProps from './IRecipeProps';
 import {withStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
@@ -19,6 +18,13 @@ import compressImage from 'browser-image-compression';
 import history from '../../helpers/history';
 import newRecipeImageUrl from '../../new-recipe.jpg';
 import './Recipe.scss';
+
+interface IRecipeProps {
+    classes: any;
+    selectedRecipe: IRecipe;
+    upsertRecipe(recipe: IRecipe): Promise<string>;
+    deleteRecipe(recipeId: string): Promise<void>;
+}
 
 interface IRecipeState {
     recipe: IRecipe;
@@ -145,7 +151,6 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
 
     async handleSave(recipe: IRecipe): Promise<void> {
         const recipeId = await this.props.upsertRecipe(recipe);
-        this.props.updateRecipeId(recipeId);
         history.push(`/recipe/${recipeId}`);
 
         this.setState({

@@ -3,22 +3,17 @@ import Thumbnail from '../thumbnail/Thumbnail';
 import IRecipe from '../recipe/IRecipe';
 import './List.scss';
 
-interface IList {
+interface IListProps {
     recipes: IRecipe[];
     selectRecipe(id: string): IRecipe;
 }
 
-const List = (props: IList) => {
-    const {recipes, selectRecipe} = props;
-
-    return (
-        <div className="recipe-list-container">
-            {recipes.map(r => (<Thumbnail 
-                key={r.id}
-                recipe={r}
-                selectRecipe={selectRecipe} />))}
-        </div>
-    )
-}
+const List = (props: IListProps) =>
+    <div className="recipe-list-container">
+        {props.recipes.map(r => (<Thumbnail 
+            key={r.id}
+            recipe={r}
+            selectRecipe={props.selectRecipe} />))}
+    </div>
 
 export default List;

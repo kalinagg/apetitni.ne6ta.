@@ -6,5 +6,4 @@ export default interface IRecipe {
     instructions: string;
     isUploading?: boolean;
     isEditMode?: boolean;
-    error?: {message: string};
 }

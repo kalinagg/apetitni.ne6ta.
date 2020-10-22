@@ -7,13 +7,13 @@ import CardContent from '@material-ui/core/CardContent';
 import {withStyles} from '@material-ui/core/styles';
 import './Thumbnail.scss';
 
-interface IThumbnail {
+interface IThumbnailProps {
     recipe: IRecipe;
     classes: any;
     selectRecipe(id: string): IRecipe;
 }
 
-const Thumbnail = (props: IThumbnail) => {
+const Thumbnail = (props: IThumbnailProps) => {
     const {recipe, classes, selectRecipe} = props;
 
     return (

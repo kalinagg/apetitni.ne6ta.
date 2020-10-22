@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Link, matchPath} from 'react-router-dom';
 import clsx from 'clsx';
 import Logo from '../logo/Logo';
@@ -12,31 +12,27 @@ import {withRouter} from 'react-router';
 const HeaderWithRouter = withRouter(props => <Header {...props}/>);
 export default HeaderWithRouter;
 
-interface IHeaderProps {}
-
-class Header extends Component<IHeaderProps> {
-    render() {
-        const isOnRecipeList = matchPath((this.props as any).location.pathname, {path: `/recipe/:id`});
-        
-        return (
-            <div className="header-container">     
-                <Link to='/' className={clsx(!isOnRecipeList && "hidden")}>
-                    <IconButton>
-                        <KeyboardBackspaceIcon style={{color: '#666'}} />
-                    </IconButton>
-                </Link>
-                <Logo />
-                <Link to='/recipe/new'>
-                    <Fab
-                        className={clsx("add-icon", isOnRecipeList && "hidden")}
-                        size="small"
-                        color="secondary"
-                        aria-label="Add Recipe"
-                        style={{background: '#f33'}}>
-                        <AddIcon />
-                    </Fab>
-                </Link>
-            </div>
-        )
-    }
+const Header = props => {    
+    const isOnRecipeList = matchPath((props as any).location.pathname, {path: `/recipe/:id`});
+    
+    return (
+        <div className="header-container">     
+            <Link to='/' className={clsx(!isOnRecipeList && "hidden")}>
+                <IconButton>
+                    <KeyboardBackspaceIcon style={{color: '#666'}} />
+                </IconButton>
+            </Link>
+            <Logo />
+            <Link to='/recipe/new'>
+                <Fab
+                    className={clsx("add-icon", isOnRecipeList && "hidden")}
+                    size="small"
+                    color="secondary"
+                    aria-label="Add Recipe"
+                    style={{background: '#f33'}}>
+                    <AddIcon />
+                </Fab>
+            </Link>
+        </div>
+    )
 }

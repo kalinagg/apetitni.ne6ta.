@@ -4,7 +4,7 @@ import history from '../../helpers/history';
 import HeaderWithRouter from '../header/Header';
 import Footer from '../footer/Footer';
 import SnackbarMessage from '../snackbar/SnackbarMessage';
-import { closeSnackbar, deleteRecipeFromServer, fetchRecipes, selectRecipe, updateRecipeId, upsertRecipe } from '../../actions';
+import { closeSnackbar, deleteRecipeFromServer, fetchRecipes, selectRecipe, upsertRecipe } from '../../actions';
 import { connect } from 'react-redux';
 import Recipe from '../recipe/Recipe';
 import List from '../list/List';
@@ -16,13 +16,11 @@ class App extends Component<any, {}> {
 
     render() {
         const {
-            error,
             isLoaded,
             recipes,
             selectedRecipe,
             selectRecipe,
             upsertRecipe,
-            updateRecipeId,
             deleteRecipe,
             open, severity, message, undo, closeSnackbar} = this.props;        
         
@@ -39,7 +37,6 @@ class App extends Component<any, {}> {
                                 {...props}
                                 selectedRecipe={selectedRecipe}
                                 upsertRecipe={upsertRecipe}
-                                updateRecipeId={updateRecipeId}
                                 deleteRecipe={deleteRecipe}
                             />)}
                         />
@@ -76,7 +73,6 @@ const mapDispatchToProps = dispatch => ({
     fetchRecipes: () => dispatch(fetchRecipes()),
     selectRecipe: recipeId => dispatch(selectRecipe(recipeId)),
     upsertRecipe: recipe => dispatch(upsertRecipe(recipe)),
-    updateRecipeId: recipeId => dispatch(updateRecipeId(recipeId)),
     deleteRecipe: recipeId => dispatch(deleteRecipeFromServer(recipeId)),
     closeSnackbar: () => dispatch(closeSnackbar())
 });

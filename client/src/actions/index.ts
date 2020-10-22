@@ -27,12 +27,6 @@ export const deleteRecipe = (recipeId: string): types.DeleteRecipeAction => ({
     recipeId
 });
 
-// export const openSnackbar = (severity: types.Severity, message: string): types.OpenSnackbarAction => ({
-//     type: types.OPEN_SNACKBAR,
-//     severity,
-//     message
-// });
-
 export const openSnackbarSuccess = (message: string): types.OpenSnackbarAction => ({
     type: types.OPEN_SNACKBAR,
     severity: 'success',
@@ -49,15 +43,6 @@ export const closeSnackbar = (): types.CloseSnackbarAction => ({
     type: types.CLOSE_SNACKBAR
 });
 
-// Recipe
-// export const updateTitle = text => ({type: types.UPDATE_TITLE, text});
-// export const updateIngredients = text => ({type: types.UPDATE_INGREDIENTS, text});
-// export const updateInstructions = text => ({type: types.UPDATE_INSTRUCTIONS, text});
-// export const uploadImage = image => ({type: types.UPLOAD_IMAGE, image});
-// export const cancel = recipe => ({type: types.CANCEL, recipe});
-// export const edit = recipe => ({type: types.EDIT, recipe});
-// export const save = recipe => ({type: types.SAVE, recipe});
-
 const recipeManagerClient = new RecipeManagerClient();
 
 export const fetchRecipes = () => {
@@ -66,7 +51,7 @@ export const fetchRecipes = () => {
             const recipes = await recipeManagerClient.getRecipes();
             dispatch(showRecipes(recipes));
         } catch(err) {
-            console.log(err);
+            dispatch(openSnackbarError('Something went wrong. Please try again later.'));
         }
     }
 }
@@ -76,6 +61,7 @@ export const upsertRecipe = recipe => {
         try {
             const recipeId = await recipeManagerClient.upsertRecipe(recipe);            
             dispatch(saveRecipe(recipe));
+            dispatch(updateRecipeId(recipeId));
             dispatch(openSnackbarSuccess('Recipe saved.'));
 
             return recipeId;
