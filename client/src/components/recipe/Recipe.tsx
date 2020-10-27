@@ -51,7 +51,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                 instructions: '',
                 img: newRecipeImageUrl,
                 ingredients: ''}
-            : undefined;
+            : props.recipe;
 
         this.state = {
             recipe,
@@ -77,7 +77,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
     componentDidUpdate() {
         this.selectRecipe();
 
-        if (!this.state.recipe) {
+        if (!this.state.recipe || (this.props.recipe && this.state.recipe.id !== this.props.recipe.id)) {       
             this.setState({
                 ...this.state,
                 recipe: this.props.recipe,
