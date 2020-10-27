@@ -1,4 +1,4 @@
-import * as types from '../constants/types';
+import * as types from '../types';
 import IRecipe from '../components/recipe/IRecipe';
 import RecipeManagerClient from '../helpers/RecipeManagerClient';
 
@@ -7,8 +7,8 @@ export const selectRecipe = (recipeId : string): types.SelectRecipeAction => ({
     recipeId
 });
 
-export const showRecipes = (recipes: IRecipe[]): types.ShowRecipesAction => ({
-    type: types.SHOW_RECIPES,
+export const receiveRecipes = (recipes: IRecipe[]): types.ReceiveRecipesAction => ({
+    type: types.RECEIVE_RECIPES,
     recipes
 });
 
@@ -49,7 +49,7 @@ export const fetchRecipes = () => {
     return async dispatch => {
         try {
             const recipes = await recipeManagerClient.getRecipes();
-            dispatch(showRecipes(recipes));
+            dispatch(receiveRecipes(recipes));
         } catch(err) {
             dispatch(openSnackbarError('Something went wrong. Please try again later.'));
         }

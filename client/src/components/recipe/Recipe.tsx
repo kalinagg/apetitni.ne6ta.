@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import IRecipe from './IRecipe';
+import { connect } from 'react-redux';
 import {withStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import ShareIcon from '@material-ui/icons/Share';
@@ -18,17 +18,24 @@ import compressImage from 'browser-image-compression';
 import history from '../../helpers/history';
 import newRecipeImageUrl from '../../new-recipe.jpg';
 import './Recipe.scss';
+import { RootState } from '../../types';
+import { deleteRecipeFromServer, selectRecipe, upsertRecipe } from '../../actions';
+import Progress from '../circular-progress/CircularProgress';
+import { CircularProgress } from '@material-ui/core';
 
 interface IRecipeProps {
     classes: any;
-    selectedRecipe: IRecipe;
+    recipe: IRecipe | undefined;
+    id: string;
+    recipesLoaded: boolean;
+    selectRecipe(id: string): IRecipe;
     upsertRecipe(recipe: IRecipe): Promise<string>;
     deleteRecipe(recipeId: string): Promise<void>;
 }
 
 interface IRecipeState {
-    recipe: IRecipe;
-    recipeBeforeChange: IRecipe;
+    recipe: IRecipe | undefined;
+    recipeBeforeChange: IRecipe | undefined;
     isUploading: boolean;
     isEditMode: boolean;
 }
@@ -36,8 +43,7 @@ interface IRecipeState {
 class Recipe extends Component<IRecipeProps, IRecipeState> {
     constructor(props: IRecipeProps) {
         super(props);
-        const recipeId = (props as any).match.params.id;
-        const isRecipeNew = recipeId === 'new';
+        const isRecipeNew = props.id === 'new';
         const recipe = isRecipeNew
             ? {
                 id: '',
@@ -45,14 +51,14 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                 instructions: '',
                 img: newRecipeImageUrl,
                 ingredients: ''}
-            : props.selectedRecipe;
+            : undefined;
 
         this.state = {
             recipe,
             recipeBeforeChange: recipe,
             isUploading: false,
             isEditMode: isRecipeNew
-        }        
+        } 
 
         this.updateTitle = this.updateTitle.bind(this);
         this.updateIngredients = this.updateIngredients.bind(this);
@@ -64,7 +70,31 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         this.handleDelete = this.handleDelete.bind(this);
     }
 
+    componentDidMount() {
+        this.selectRecipe();
+    }
+
+    componentDidUpdate() {
+        this.selectRecipe();
+
+        if (!this.state.recipe) {
+            this.setState({
+                ...this.state,
+                recipe: this.props.recipe,
+                recipeBeforeChange: this.props.recipe                        
+            });
+        }
+    }
+
+    private selectRecipe() {
+        if (this.props.recipesLoaded) {
+            this.props.selectRecipe(this.props.id);
+        }
+    }
+
     updateTitle(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+        if (!this.state.recipe) return;
+
         this.setState({
             ...this.state,
             recipe: {
@@ -75,6 +105,8 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
     }
 
     updateIngredients(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+        if (!this.state.recipe) return;
+
         this.setState({
             ...this.state,
             recipe: {
@@ -85,6 +117,8 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
     }
 
     updateInstructions(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+        if (!this.state.recipe) return;
+
         this.setState({
             ...this.state,
             recipe: {
@@ -94,7 +128,9 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         });      
     }
 
-    async handleUploadImage(event): Promise<void> {    
+    async handleUploadImage(event): Promise<void> {
+        if (!this.state.recipe) return;
+
         this.setState({isUploading: true});
             
         const image = event.target.files[0];
@@ -161,8 +197,10 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
 
     render() {
         const {recipe, isEditMode, isUploading} = this.state;
-        const classes = this.props.classes;        
+        const classes = this.props.classes;
 
+        if (!recipe) return <Progress />
+        
         return (
             <Card
                 className={clsx(classes.card, "recipe", isEditMode && "edit-mode")}
@@ -268,13 +306,13 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                             value={recipe.instructions}
                             onChange={this.updateInstructions} />
                     </div>
-                </CardContent>                                        
+                </CardContent>
             </Card>
         );
     }
 }
 
-export default withStyles(theme => ({
+const recipeWithStyles = withStyles(theme => ({
     card: {
         boxShadow: '3px 5px 4px #bbb',
         borderRadius: 0,
@@ -292,4 +330,23 @@ export default withStyles(theme => ({
     colorPrimary: {
         color: '#333',
     },
-  }))(Recipe);
+}))(Recipe);
+
+const mapStateToProps = (state: RootState) => {
+    const {recipesLoaded, selectedRecipe} = state.recipesState;
+
+    return {
+        recipesLoaded,
+        recipe: selectedRecipe,        
+    }
+}  
+
+const mapDispatchToProps = dispatch => ({
+    selectRecipe: recipeId => dispatch(selectRecipe(recipeId)),
+    upsertRecipe: recipe => dispatch(upsertRecipe(recipe)),
+    deleteRecipe: recipeId => dispatch(deleteRecipeFromServer(recipeId)),
+});
+
+const ConnectedRecipe = connect(mapStateToProps, mapDispatchToProps)(recipeWithStyles);
+
+export default ConnectedRecipe;

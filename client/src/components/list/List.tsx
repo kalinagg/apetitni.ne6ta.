@@ -2,18 +2,22 @@ import React from 'react';
 import Thumbnail from '../thumbnail/Thumbnail';
 import IRecipe from '../recipe/IRecipe';
 import './List.scss';
+import { RootState } from '../../types';
+import { connect } from 'react-redux';
 
 interface IListProps {
-    recipes: IRecipe[];
-    selectRecipe(id: string): IRecipe;
+    recipes: IRecipe[] | undefined;
 }
 
 const List = (props: IListProps) =>
     <div className="recipe-list-container">
-        {props.recipes.map(r => (<Thumbnail 
-            key={r.id}
-            recipe={r}
-            selectRecipe={props.selectRecipe} />))}
+        {props.recipes ? props.recipes.map(r => (<Thumbnail key={r.id} recipe={r} />)) : <div></div>}
     </div>
 
-export default List;
+const mapStateToProps = (state: RootState) => ({
+    recipes: state.recipesState.recipes
+});
+  
+const ConnectedList = connect(mapStateToProps)(List);
+
+export default ConnectedList;

@@ -10,15 +10,14 @@ import './Thumbnail.scss';
 interface IThumbnailProps {
     recipe: IRecipe;
     classes: any;
-    selectRecipe(id: string): IRecipe;
 }
 
 const Thumbnail = (props: IThumbnailProps) => {
-    const {recipe, classes, selectRecipe} = props;
+    const {recipe, classes} = props;
 
     return (
         <Link to={`/recipe/${recipe.id}`}>
-            <Card className={clsx(classes.card, "thumbnail")} onClick={() => selectRecipe(recipe.id)}>                        
+            <Card className={clsx(classes.card, "thumbnail")}>                        
                 <CardContent className={clsx(classes.cardContent)}>
                     <img className="thumbnail-image" src={recipe.img} alt={recipe.title} />     
                     <h2>{recipe.title}</h2>

@@ -1,25 +1,19 @@
 import IRecipe from '../components/recipe/IRecipe';
-import { SHOW_RECIPES, SELECT_RECIPE, RecipeState, RecipeActionTypes, SAVE_RECIPE, UPDATE_RECIPE_ID, DELETE_RECIPE } from '../constants/types';
+import { RECEIVE_RECIPES, SELECT_RECIPE, RecipeState, RecipeActionTypes, SAVE_RECIPE, UPDATE_RECIPE_ID, DELETE_RECIPE } from '../types';
 
 const initialRecipeState: RecipeState = {
-    isLoaded: false,
+    recipesLoaded: false,
     recipes: [],
-    selectedRecipe: {
-        id: '',
-        ingredients: '',
-        title: '',
-        img: '',
-        instructions: ''
-    }
+    selectedRecipe: undefined
 }
 
 const recipesReducer = (state = initialRecipeState, action: RecipeActionTypes) => {
     switch (action.type) {
-        case SHOW_RECIPES:
+        case RECEIVE_RECIPES:
             return ({
                 ...state,
-                isLoaded: true,
-                recipes: [...action.recipes]
+                recipesLoaded: true,
+                recipes: action.recipes
             });
         case SELECT_RECIPE:
             const selectedRecipe = state.recipes.filter(r => r.id === action.recipeId)[0];

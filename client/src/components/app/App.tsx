@@ -6,39 +6,37 @@ import Footer from '../footer/Footer';
 import SnackbarMessage from '../snackbar/SnackbarMessage';
 import { closeSnackbar, deleteRecipeFromServer, fetchRecipes, selectRecipe, upsertRecipe } from '../../actions';
 import { connect } from 'react-redux';
-import Recipe from '../recipe/Recipe';
-import List from '../list/List';
+import ConnectedList from '../list/List';
+import { RootState } from '../../types';
+import ConnectedRecipe from '../recipe/Recipe';
+import Progress from '../circular-progress/CircularProgress';
 
 class App extends Component<any, {}> {
     componentDidMount() {
-        this.props.fetchRecipes();        
+        this.props.fetchRecipes();
     }
 
     render() {
         const {
-            isLoaded,
-            recipes,
+            recipesLoaded,
             selectedRecipe,
             selectRecipe,
             upsertRecipe,
             deleteRecipe,
             open, severity, message, undo, closeSnackbar} = this.props;        
-        
+
+        const listWithProgress = !recipesLoaded ? <Progress /> : <ConnectedList />;
+
         return (
             <React.StrictMode>
                 <Router history={history}>
                     <HeaderWithRouter />
                     <Switch>
                         <Route exact path="/">
-                            <List recipes={recipes} selectRecipe={selectRecipe} />                    
+                            {listWithProgress}
                         </Route>  
-                        <Route path="/recipe/:id" render={props =>                   
-                            (<Recipe
-                                {...props}
-                                selectedRecipe={selectedRecipe}
-                                upsertRecipe={upsertRecipe}
-                                deleteRecipe={deleteRecipe}
-                            />)}
+                        <Route path="/recipe/:id" render={props => 
+                            <ConnectedRecipe id={props.match.params.id} />}
                         />
                     </Switch>         
                     <SnackbarMessage
@@ -54,13 +52,12 @@ class App extends Component<any, {}> {
     }
 }
 
-const mapStateToProps = state => {
-    const {isLoaded, recipes, selectedRecipe} = state.recipesReducer;
-    const {open, severity, message, undo} = state.snackbarReducer;
+const mapStateToProps = (state: RootState) => {
+    const {recipesLoaded, selectedRecipe} = state.recipesState;
+    const {open, severity, message, undo} = state.snackbarState;
 
     return {
-        isLoaded,
-        recipes,
+        recipesLoaded,
         selectedRecipe,
         open,
         severity,

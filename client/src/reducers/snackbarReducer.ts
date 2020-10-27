@@ -1,4 +1,4 @@
-import { SnackbarState, SnackbarActionTypes, OPEN_SNACKBAR, CLOSE_SNACKBAR } from '../constants/types';
+import { SnackbarState, SnackbarActionTypes, OPEN_SNACKBAR, CLOSE_SNACKBAR } from '../types';
 
 const initialSnackbarState: SnackbarState = {
     open: false,

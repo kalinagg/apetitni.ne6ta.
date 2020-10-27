@@ -26,12 +26,3 @@ $grid-gap: 10px;
         @include gridCols(2);
     }
 }
-
-.recipe-list-process-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    color: #333;
-    opacity: .4;
-}

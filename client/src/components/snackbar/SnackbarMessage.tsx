@@ -6,7 +6,7 @@ import Alert from '@material-ui/lab/Alert';
 import {withStyles} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import {Severity} from '../../constants/types';
+import {Severity} from '../../types';
 
 interface ISnackbarProps {
     classes: any;

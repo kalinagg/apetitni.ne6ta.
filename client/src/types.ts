@@ -1,6 +1,6 @@
-import IRecipe from '../components/recipe/IRecipe';
+import IRecipe from './components/recipe/IRecipe';
 
-export const SHOW_RECIPES  = 'SHOW_RECIPES';
+export const RECEIVE_RECIPES  = 'RECEIVE_RECIPES';
 export const SELECT_RECIPE = 'SELECT_RECIPE';
 export const SAVE_RECIPE = 'SAVE_RECIPE';
 export const UPDATE_RECIPE_ID = 'UPDATE_RECIPE_ID';
@@ -8,14 +8,19 @@ export const DELETE_RECIPE = 'DELETE_RECIPE';
 export const OPEN_SNACKBAR = 'OPEN_SNACKBAR';
 export const CLOSE_SNACKBAR = 'CLOSE_SNACKBAR';
 
-export interface RecipeState {
-    isLoaded: boolean;
-    recipes: IRecipe[];
-    selectedRecipe: IRecipe;
+export interface RootState {
+    recipesState: RecipeState;
+    snackbarState: SnackbarState;
 }
 
-export interface ShowRecipesAction {
-    type: typeof SHOW_RECIPES;
+export interface RecipeState {
+    recipesLoaded: boolean;
+    recipes: IRecipe[];
+    selectedRecipe: IRecipe | undefined;
+}
+
+export interface ReceiveRecipesAction {
+    type: typeof RECEIVE_RECIPES;
     recipes: IRecipe[];
 }
 
@@ -40,7 +45,7 @@ export interface DeleteRecipeAction {
 }
 
 export type RecipeActionTypes = 
-    ShowRecipesAction | SelectRecipeAction | SaveRecipeAction | UpdateRecipeIdAction | DeleteRecipeAction;
+    ReceiveRecipesAction | SelectRecipeAction | SaveRecipeAction | UpdateRecipeIdAction | DeleteRecipeAction;
 
 export type Severity = 'success' | 'error';
 
