@@ -6,7 +6,9 @@ import Alert from '@material-ui/lab/Alert';
 import {withStyles} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import {Severity} from '../../types';
+import {RootState, Severity} from '../../types';
+import { closeSnackbar } from '../../actions';
+import { connect } from 'react-redux';
 
 interface ISnackbarProps {
     classes: any;
@@ -14,11 +16,11 @@ interface ISnackbarProps {
     severity: Severity;
     message: string;
     undo: boolean;
-    closeSnackbar(): void;
+    close(): void;
 }
 
 const SnackbarMessage = (props: ISnackbarProps) => {    
-    const {classes, open, severity, message, undo, closeSnackbar} = props;
+    const {classes, open, severity, message, undo, close} = props;
     
     let undoButton;
     if(undo) {
@@ -29,15 +31,15 @@ const SnackbarMessage = (props: ISnackbarProps) => {
         <Snackbar
             open={open}
             anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-            onClose={closeSnackbar}
+            onClose={close}
             autoHideDuration={4000}>
             <Alert
-                onClose={closeSnackbar}
+                onClose={close}
                 action={
                     <Fragment>
                         {undoButton}
                         <IconButton
-                            onClick={closeSnackbar}
+                            onClick={close}
                             aria-label="close"
                             color="inherit"
                             size="small">
@@ -55,8 +57,27 @@ const SnackbarMessage = (props: ISnackbarProps) => {
     );
 }
 
-export default withStyles(theme => ({
+const SnackbarWithStyles = withStyles(theme => ({
     root: {
         borderRadius: '2px'
     }
-  }))(SnackbarMessage);
+}))(SnackbarMessage);
+
+const mapStateToProps = (state: RootState) => {
+    const {open, severity, message, undo} = state.snackbarState;
+
+    return {
+        open,
+        severity,
+        message,
+        undo
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    close: () => dispatch(closeSnackbar())
+});
+
+const ConnectedSnackbar = connect(mapStateToProps, mapDispatchToProps)(SnackbarWithStyles);
+
+export default ConnectedSnackbar;

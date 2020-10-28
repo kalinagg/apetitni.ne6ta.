@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import IRecipe from './IRecipe';
 import { connect } from 'react-redux';
 import {withStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
@@ -18,7 +17,7 @@ import compressImage from 'browser-image-compression';
 import history from '../../helpers/history';
 import newRecipeImageUrl from '../../new-recipe.jpg';
 import './Recipe.scss';
-import { RootState } from '../../types';
+import { RootState, IRecipe } from '../../types';
 import { deleteRecipeFromServer, selectRecipe, upsertRecipe } from '../../actions';
 import Progress from '../circular-progress/CircularProgress';
 import { CircularProgress } from '@material-ui/core';
@@ -312,7 +311,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
     }
 }
 
-const recipeWithStyles = withStyles(theme => ({
+const RecipeWithStyles = withStyles(theme => ({
     card: {
         boxShadow: '3px 5px 4px #bbb',
         borderRadius: 0,
@@ -347,6 +346,6 @@ const mapDispatchToProps = dispatch => ({
     deleteRecipe: recipeId => dispatch(deleteRecipeFromServer(recipeId)),
 });
 
-const ConnectedRecipe = connect(mapStateToProps, mapDispatchToProps)(recipeWithStyles);
+const ConnectedRecipe = connect(mapStateToProps, mapDispatchToProps)(RecipeWithStyles);
 
 export default ConnectedRecipe;

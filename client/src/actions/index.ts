@@ -1,5 +1,4 @@
 import * as types from '../types';
-import IRecipe from '../components/recipe/IRecipe';
 import RecipeManagerClient from '../helpers/RecipeManagerClient';
 
 export const selectRecipe = (recipeId : string): types.SelectRecipeAction => ({
@@ -7,12 +6,12 @@ export const selectRecipe = (recipeId : string): types.SelectRecipeAction => ({
     recipeId
 });
 
-export const receiveRecipes = (recipes: IRecipe[]): types.ReceiveRecipesAction => ({
+export const receiveRecipes = (recipes: types.IRecipe[]): types.ReceiveRecipesAction => ({
     type: types.RECEIVE_RECIPES,
     recipes
 });
 
-export const saveRecipe = (recipe: IRecipe): types.SaveRecipeAction => ({
+export const saveRecipe = (recipe: types.IRecipe): types.SaveRecipeAction => ({
     type: types.SAVE_RECIPE,
     recipe
 });

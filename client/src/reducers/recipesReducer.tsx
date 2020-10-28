@@ -1,5 +1,4 @@
-import IRecipe from '../components/recipe/IRecipe';
-import { RECEIVE_RECIPES, SELECT_RECIPE, RecipeState, RecipeActionTypes, SAVE_RECIPE, UPDATE_RECIPE_ID, DELETE_RECIPE } from '../types';
+import { RECEIVE_RECIPES, SELECT_RECIPE, RecipeState, RecipeActionTypes, SAVE_RECIPE, UPDATE_RECIPE_ID, DELETE_RECIPE, IRecipe } from '../types';
 
 const initialRecipeState: RecipeState = {
     recipesLoaded: false,

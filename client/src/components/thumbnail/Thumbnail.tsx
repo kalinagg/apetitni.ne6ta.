@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import IRecipe from '../recipe/IRecipe';
+import { IRecipe } from '../../types';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';

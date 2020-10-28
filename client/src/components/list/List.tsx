@@ -1,8 +1,7 @@
 import React from 'react';
 import Thumbnail from '../thumbnail/Thumbnail';
-import IRecipe from '../recipe/IRecipe';
 import './List.scss';
-import { RootState } from '../../types';
+import { IRecipe, RootState } from '../../types';
 import { connect } from 'react-redux';
 
 interface IListProps {
