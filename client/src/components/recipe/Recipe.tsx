@@ -59,9 +59,6 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
             isEditMode: isRecipeNew
         } 
 
-        this.updateTitle = this.updateTitle.bind(this);
-        this.updateIngredients = this.updateIngredients.bind(this);
-        this.updateInstructions = this.updateInstructions.bind(this);
         this.handleUploadImage = this.handleUploadImage.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
@@ -91,41 +88,19 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
         }
     }
 
-    updateTitle(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
-        if (!this.state.recipe) return;
+    updateField(stateKey: string): (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void {
+        return event => {
+            if (!this.state.recipe) return;
 
-        this.setState({
-            ...this.state,
-            recipe: {
-                ...this.state.recipe,
-                title: event.target.value
-            }
-        });     
-    }
-
-    updateIngredients(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
-        if (!this.state.recipe) return;
-
-        this.setState({
-            ...this.state,
-            recipe: {
-                ...this.state.recipe,
-                ingredients: event.target.value
-            }
-        });
-    }
-
-    updateInstructions(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
-        if (!this.state.recipe) return;
-
-        this.setState({
-            ...this.state,
-            recipe: {
-                ...this.state.recipe,
-                instructions: event.target.value
-            }
-        });      
-    }
+            this.setState({
+                ...this.state,
+                recipe: {
+                    ...this.state.recipe,
+                    [stateKey]: event.target.value
+                }
+            });
+        }
+    }    
 
     async handleUploadImage(event): Promise<void> {
         if (!this.state.recipe) return;
@@ -272,7 +247,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                                     label="Title"
                                     variant="outlined"
                                     value={recipe.title}
-                                    onChange={this.updateTitle} />
+                                    onChange={this.updateField('title')} />
                             </div>
                             <hr className="devider" />
                             <div className="recipe-input">
@@ -287,7 +262,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                                     label="Ingredients"
                                     variant="outlined"                                
                                     value={recipe.ingredients}
-                                    onChange={this.updateIngredients} />     
+                                    onChange={this.updateField('ingredients')} />     
                             </div>                            
                         </div>                        
                     </div>
@@ -303,7 +278,7 @@ class Recipe extends Component<IRecipeProps, IRecipeState> {
                             label="Instructions"
                             variant="outlined"
                             value={recipe.instructions}
-                            onChange={this.updateInstructions} />
+                            onChange={this.updateField('instructions')} />
                     </div>
                 </CardContent>
             </Card>

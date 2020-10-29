@@ -1,12 +1,12 @@
-import { RECEIVE_RECIPES, SELECT_RECIPE, RecipeState, RecipeActionTypes, SAVE_RECIPE, UPDATE_RECIPE_ID, DELETE_RECIPE, IRecipe } from '../types';
+import { RECEIVE_RECIPES, SELECT_RECIPE, RecipesState, RecipeActionTypes, SAVE_RECIPE, UPDATE_RECIPE_ID, DELETE_RECIPE, IRecipe } from '../types';
 
-const initialRecipeState: RecipeState = {
+const initialRecipesState: RecipesState = {
     recipesLoaded: false,
     recipes: [],
     selectedRecipe: undefined
 }
 
-const recipesReducer = (state = initialRecipeState, action: RecipeActionTypes) => {
+const recipesReducer = (state = initialRecipesState, action: RecipeActionTypes) => {
     switch (action.type) {
         case RECEIVE_RECIPES:
             return ({

@@ -17,11 +17,11 @@ export interface IRecipe {
 }
 
 export interface RootState {
-    recipesState: RecipeState;
+    recipesState: RecipesState;
     snackbarState: SnackbarState;
 }
 
-export interface RecipeState {
+export interface RecipesState {
     recipesLoaded: boolean;
     recipes: IRecipe[];
     selectedRecipe: IRecipe | undefined;
